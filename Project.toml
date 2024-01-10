@@ -1,0 +1,4 @@
+name = "SimpleFiniteElements"
+uuid = "125632e7-bef4-4648-bc1f-71b5efcf8068"
+authors = ["William McLean <w.mclean@unsw.edu.au>"]
+version = "0.1.0"
