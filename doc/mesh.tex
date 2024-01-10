@@ -1,0 +1,178 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath,graphicx,tikz}
+\usepackage[capitalize]{cleveref}
+\usepackage{listings}
+\lstset{basicstyle={\small\ttfamily}}
+%opening
+\title{Mesh Data Structures}
+\author{Bill McLean}
+\date{\today}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Meshes for conforming methods}
+The \texttt{spatial\_domains} directory contains several geometry description 
+files in the gmsh \texttt{.geo} format.  A simple example is \texttt{rect.geo},
+which describes a rectangular domain $(0,L_x)\times(0,L_y)$.
+\lstinputlisting{../spatial_domains/rect.geo}
+The julia commands
+\begin{lstlisting}
+using FinElt
+
+gmodel = GeometryModel("relative_path_to/rect.geo")
+hmax = 0.5
+mesh = FEMesh(gmodel, hmax, save_mesh_file=true)
+\end{lstlisting}
+read the file \texttt{rect.geo} and create a \texttt{GeometryModel} object 
+\texttt{gmodel} and a \texttt{FEMesh} object \texttt{mesh}.  The 
+\texttt{FEMesh} function also writes the file \texttt{rect.msh} to the
+current directory, so you can display the mesh using \texttt{gmsh}; see  
+the top three meshes in~\cref{fig: elts}.  (In the gmsh ``Options'' window,
+select ``Mesh'' and then, in the ``Visibility'' tab, check the boxes ``2D
+element edges'' and one of ``Node labels'', ``1D element labels'' or ``2D
+element labels'').
+
+\begin{figure}
+\caption{The triangulation with the node and element labels.}\label{fig: elts}
+\begin{center}
+\includegraphics[scale=0.4]{images/elts0d-crop.pdf}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\includegraphics[scale=0.4]{images/elts1d-crop.pdf}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\includegraphics[scale=0.4]{images/elts2d-crop.pdf}
+\end{center}
+\vspace{0.1cm}
+\begin{center}
+\includegraphics[scale=0.4]{images/ncelts0d-crop.pdf}
+\end{center}
+\end{figure}
+
+We find that \texttt{mesh.elt\_nodes\_in} is a Dict whose keys are the physical 
+labels defined in \texttt{rect.geo}.  For example, 
+\begin{lstlisting}
+mesh.elt_tags_in["Left"]
+\end{lstlisting}
+is the vector \texttt{[24, 25, 26, 27, 28]} of elements along the left 
+boundary, and
+\begin{lstlisting}
+mesh.elt_node_tags_in["Left"]
+\end{lstlisting}
+is 
+\begin{lstlisting}
+2x5 Matrix{Int64}:
+  4  25  26  27  28
+ 25  26  27  28   1
+\end{lstlisting}
+Each column of this matrix gives the node labels of the two end points of 
+the corresponding 1D element.  Similarly, if we do
+\begin{lstlisting}
+elt = mesh.elt_tags_in["Omega"]
+node = mesh.elt_node_tags_in["Omega"]
+idx = findfirst(elt) do item
+    item == 100
+end 
+\end{lstlisting}
+so that \texttt{elt[idx]} equals \texttt{100}, then \texttt{node[:,idx]} is the 
+vector \texttt{[3, 17, 62]} of nodes that form the vertices of 
+element~\texttt{100} (look in the top right corner).
+
+If we want to solve a boundary-value problem on the rectangular domain, we need 
+to specify any essential boundary conditions.   For example, 
+\begin{lstlisting}
+essential_bc = [("Left", 0.0), ("Right", 1.0)] 
+dof = DegreesOfFreedom(mesh, essential_bc)
+\end{lstlisting}
+creates a \texttt{dof} object that assigns an enumeration of the degrees of
+freedom such that the free nodes preceed the fixed nodes.  We find that the
+number of free nodes, \texttt{dof.num\_free}, is 57, and the number of fixed
+nodes, \texttt{dof.num\_fixed}, is 12.  The labels of the free nodes are given
+by the vector \texttt{dof.node\_tag[1:57]}, and of the fixed nodes by
+\texttt{dof.node\_tag[58:end]}, the latter being \texttt{[1, 2, 3, 4, 13, 14, 
+15, 16, 25, 26, 27, 28]}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Meshes for nonconforming methods}
+In our non-conforming method, the degrees of freedom in an element are the 
+values of the solution at the midpoints of the edges.  We modify the earlier 
+commands as follows.
+\begin{lstlisting}
+import FinElt.NonConformingPoisson: ELT_DOF
+mesh = FEMesh(gmodel, hmax, order=2, save_msh_file=true)
+dof = DegreesOfFreedom(mesh, essential_bc, ELT_DOF)
+\end{lstlisting}
+Here, \texttt{mesh.elt\_type\_in} is 
+\begin{lstlisting}
+Dict{String, Int32} with 5 entries:
+  "Right"  => 8
+  "Left"   => 8
+  "Omega"  => 9
+  "Bottom" => 8
+  "Top"    => 8
+\end{lstlisting}
+and by checking \texttt{mesh.elt\_properties} we see that the
+1D and 2D elements are of type \texttt{Line 3} and \texttt{Triangle 6}, 
+respectively. The dictionary \texttt{ELT\_DOF} is
+\begin{lstlisting}
+Dict{Int32, Vector{Int64}} with 2 entries:
+  9 => [4, 5, 6]
+  8 => [3]
+\end{lstlisting}
+meaning that in the \texttt{Line 3} elements the degree of freedom is at node~3,
+and in the \texttt{Triangle 6} elements the degrees of freedom are at nodes 4, 
+5~and 6; see the bottom mesh in~\cref{fig: elts}.
+
+\begin{figure}
+\caption{Numbering of the vertices and midpoints in 1D and 2D 
+elements.}\label{fig: vertex midpt}
+\begin{center}
+\begin{tikzpicture}[scale=0.4]
+\draw[-] (-13,3) -- (-9,3) -- (-5,3);
+\foreach \x in {-13, -9, -5}
+    \draw[fill] (\x,3) circle(0.1);
+\node[below] at (-13,3) {1};
+\node[below] at (-9,3) {3};
+\node[below] at (-5,3) {2};
+\draw[-] (0,0) -- (6,4) -- (-2,8) -- (0,0);
+\draw[fill] (0,0) circle (0.1);
+\node[below] at (0,0) {1};
+\draw[fill] (6,4) circle (0.1);
+\node[right] at (6,4) {2};
+\draw[fill] (-2,8) circle (0.1);
+\node[above] at (-2,8) {3};
+\draw[fill] (3,2) circle (0.1);
+\node[below right] at (3,2) {4};
+\draw[fill] (2,6) circle (0.1);
+\node[above right] at (2,6) {5};
+\draw[fill] (-1,4) circle (0.1);
+\node[above right] at (-1,4) {6};
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+The numbering of the 1D and 2D elements has not changed, but the nodes labels 
+are now as shown in \cref{fig: ncelts}.  Repeating the commands
+\begin{lstlisting}
+elt = mesh.elt_tags_in["Omega"]
+node = mesh.elt_node_tags_in["Omega"]
+idx = findfirst(elt) do item
+    item == 100
+end 
+\end{lstlisting}
+we now find that \texttt{node[:,idx]} is \texttt{[3, 31, 90, 39, 208, 209]}, 
+the new vector of node labels in element~\texttt{100}.  The number of free 
+nodes, \texttt{dof.num\_free}, is 166, and the number of fixed nodes,
+\texttt{dof.num\_fixed}, is 10.  The labels of the fixed nodes are given by
+\texttt{dof.node\_tag[167:end]}, which is the vector \texttt{[26, 27, 28, 29, 
+30, 52, 53, 54, 55, 56]} consisting of the midpoint nodes in the 1D elements 
+along the left and right sides.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

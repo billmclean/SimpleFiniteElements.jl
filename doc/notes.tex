@@ -1,0 +1,1599 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,graphicx}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
+%opening
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\Kref}{K_{\mathrm{ref}}}
+\newcommand{\area}{\operatorname{area}}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\uD}{\mathrm{D}}
+\newcommand{\uN}{\mathrm{N}}
+\newcommand{\gN}{g_{\uN}}
+\newcommand{\GammaN}{\Gamma_{\uN}}
+\newcommand{\GammaD}{\Gamma_{\uD}}
+\newcommand{\free}{^{\mathrm{free}}}
+\newcommand{\fix}{^{\mathrm{fix}}}
+\newcommand{\rot}{^\llcorner}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Notes}
+\author{William McLean}
+\date{\today}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+\tableofcontents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Triangular elements}
+
+Let $\bs{a}_1$, $\bs{a}_2$, $\bs{a}_3$ be the vertices of a triangle
+in~$\mathbb{R}^2$, ordered counterclockwise.  We assume that the vertices are
+not colinear and hence that the vectors $\bs{a}_1-\bs{a}_3$ and
+$\bs{a}_2-\bs{a}_3$ are linearly independent.  The
+\emph{barycentric coordinates}~$(\xi_1,\xi_2,\xi_3)$ of a
+point~$\bs{x}\in\mathbb{R}^2$ with respect to this triangle are defined by the
+relations
+\[
+\bs{x}=\xi_1\,\bs{a}_1+\xi_2\,\bs{a}_2+\xi_3\,\bs{a}_3
+\quad\text{and}\quad
+\xi_1+\xi_2+\xi_3=1.
+\]
+\cref{fig: barycentric} illustrates how the level sets of $\xi_i$ are
+parallel to the side of the triangle opposite to the vertex~$\bs{a}_i$.
+
+\begin{figure}
+\caption{Level sets of the barycentric coordinates~$(\xi_1,\xi_2,\xi_3)$ with
+respect to a triangle with vertices $\bs{a}_1$, $\bs{a}_2$, $\bs{a}_3$ and
+centroid~$\bs{c}=\tfrac13\bs{a}_1+\tfrac13\bs{a}_2+\tfrac13\bs{a}_3$.}
+\label{fig: barycentric}
+\begin{center}
+\includegraphics[scale=0.75]{images/barycentric-crop.pdf}
+\end{center}
+\end{figure}
+
+To express $\xi_i$ in terms of~$\bs{x}$, we introduce vectors $\bs{b}_1$,
+$\bs{b}_2$, $\bs{b}_3\in\mathbb{R}^2$ given by
+\begin{equation}\label{eq: b vectors}
+\begin{bmatrix}\bs{b}_1&\bs{b}_2 \end{bmatrix}
+    =\begin{bmatrix}(\bs{a}_1-\bs{a}_3)&(\bs{a}_2-\bs{a}_3)\end{bmatrix}^{-\top}
+\quad\text{and}\quad
+\bs{b}_1+\bs{b}_2+\bs{b}_3=\bs{0},
+\end{equation}
+where we have used the notation
+$\bs{A}^{-\top}=(\bs{A}^{-1})^\top=(\bs{A}^\top)^{-1}$ for the inverse
+transpose of a non-singular matrix~$\bs{A}$.  Recall that the \emph{centroid}
+of the triangle is the point
+$\bs{c}=\tfrac13\bs{a}_1+\tfrac13\bs{a}_2+\tfrac13\bs{a}_3$, or in other words
+the point with barycentric coordinates~$(\tfrac13,\tfrac13,\tfrac13)$.
+
+\begin{lemma}\label{lem: xi_i}
+The barycentric coordinates of~$\bs{x}$ are
+\[
+\xi_i=\tfrac13+\bs{b}_i\cdot(\bs{x}-\bs{c})\quad\text{for $i\in\{1,2,3\}$.}
+\]
+\end{lemma}
+\begin{proof}
+Since $\xi_3=1-\xi_1-\xi_2$,
+\begin{equation}\label{eq: affine xi x}
+\bs{x}=\xi_1\bs{a}_1+\xi_2\bs{a}_2+(1-\xi_1-\xi_2)\bs{a}_3
+    =\bs{a}_3+\xi_1(\bs{a}_1-\bs{a}_3)+\xi_2(\bs{a}_2-\bs{a}_3)
+\end{equation}
+and so
+\[
+\begin{bmatrix}(\bs{a}_1-\bs{a}_3)&(\bs{a}_2-\bs{a}_3)\end{bmatrix}
+\begin{bmatrix}\xi_1\\ \xi_2\end{bmatrix}=\bs{x}-\bs{a}_3.
+\]
+Multiplying on the left by $\begin{bmatrix}\bs{b}_1&\bs{b}_2\end{bmatrix}^\top$
+gives
+\[
+\begin{bmatrix}\xi_1\\ \xi_2 \end{bmatrix}
+    =\begin{bmatrix}\bs{b}_1^\top\\ \bs{b}_2^\top\end{bmatrix}(\bs{x}-\bs{a}_3)
+    =\begin{bmatrix}\bs{b}_1\cdot(\bs{x}-\bs{a}_3)\\
+                    \bs{b}_2\cdot(\bs{x}-\bs{a}_3)\end{bmatrix},
+\]
+showing that
+\[
+\xi_1=\bs{b}_1\cdot(\bs{x}-\bs{a}_3)\quad\text{and}\quad
+\xi_2=\bs{b}_2\cdot(\bs{x}-\bs{a}_3).
+\]
+In particular, for the centroid~$\bs{c}$ we have
+\[
+\tfrac13=\bs{b}_1\cdot(\bs{c}-\bs{a}_3)=\bs{b}_2\cdot(\bs{c}-\bs{a}_3),
+\]
+and hence
+\[
+\xi_i=\bs{b}_i\cdot(\bs{x}-\bs{c}+\bs{c}-\bs{a}_3)
+    =\tfrac13+\bs{b}_i\cdot(\bs{x}-\bs{c})\quad\text{for $i\in\{1,2\}$.}
+\]
+Finally,
+\[
+\xi_3=1-\xi_1-\xi_2=\tfrac13-(\bs{b}_1+\bs{b}_2)\cdot(\bs{x}-\bs{c})
+    =\tfrac13+\bs{b}_3\cdot(\bs{x}-\bs{c}),
+\]
+so the formula holds also in the case~$i=3$.
+\end{proof}
+
+\cref{lem: xi_i} implies that if we view $\xi_i$ as a function of~$\bs{x}$, then
+\begin{equation}\label{eq: grad xi_i}
+\nabla\xi_i=\bs{b}_i\quad\text{for $i\in\{1,2,3\}$.}
+\end{equation}
+Hence, $\bs{b}_i$ must be normal to the level sets of~$\xi_i$, and in
+particular to the side of the triangle opposite the vertex~$\bs{a}_i$.
+Moreover, $\bs{b}_i$ points in the direction that $\xi_i$ increases, that is,
+towards $\bs{a}_i$, as illustrated in \cref{fig: b vectors}.
+
+\begin{figure}
+\caption{The vectors $\bs{b}_1$, $\bs{b}_2$, $\bs{b}_3$ defined
+in~\eqref{eq: b vectors}}\label{fig: b vectors}
+\begin{center}
+\includegraphics[scale=0.75]{images/b_vectors-crop.pdf}
+\end{center}
+\end{figure}
+
+Let $K$ denote the triangle with vertices $\bs{a}_1$, $\bs{a}_2$, $\bs{a}_3$,
+and define a reference element
+\[
+\Kref=\{\,(\xi_1,\xi_2):\text{$0\le\xi_1\le1$ and $0\le\xi_2\le1-\xi_1$}\,\}.
+\]
+We then have a bijective affine map from~$\Kref$ to~$K$, namely
+$(\xi_1,\xi_2)\mapsto(x_1,x_2)$ given by~\eqref{eq: affine xi x}.  The Jacobian
+determinant of this mapping is the constant
+\[
+\frac{\partial(x_1,x_2)}{\partial(\xi_1,\xi_2)}
+=\det\begin{bmatrix}(\bs{a}_1-\bs{a}_3)&(\bs{a}_2-\bs{a_3})\end{bmatrix},
+\]
+and since $\area(\Kref)=\tfrac12$ it follows that
+\[
+2\area(K)=\det\begin{bmatrix}
+    (\bs{a}_1-\bs{a}_3)&(\bs{a}_2-\bs{a_3})\end{bmatrix},
+\]
+so
+\[
+\int_Kf=2\area(K)\int_0^1\int_0^{1-\xi_1}f\bigl(\bs{x}(\xi_1,\xi_1)\bigr)
+    \,\ud\xi_2\,\ud\xi_1.
+\]
+In particular, we have the following simple formula for integrating a monomial
+in the barycentric coordinates over~$K$.
+
+\begin{lemma}\label{lem: integral monomial}
+For any non-negative integers $n_1$, $n_2$, $n_3$,
+\[
+\int_K\xi_1^{n_1}\xi_2^{n_2}\xi_3^{n_3}
+    =2\area(K)\,\frac{n_1!\,n_2!\,n_3!}{(n_1+n_2+n_3+2)!}.
+\]
+\end{lemma}
+\begin{proof}
+Express the integral over~$K$ as
+\begin{align*}
+\int_K\xi_1^{n_1}\xi_2^{n_2}\xi_3^{n_3}&=2\area(K)\,n_1!\,n_2!\,n_3!
+    \int_0^1\int_0^{1-\xi_1}\frac{\xi_1^{n_1}}{n_1!}\,\frac{\xi_2^{n_2}}{n_2!}\,
+        \frac{\xi_3^{n_3}}{n_3!}\,\ud\xi_2\,\ud\xi_1\\
+    &=2\area(K)\,n_1!\,n_2!\,n_3!
+    \int_0^1\frac{\xi_1^{n_1}}{n_1!}\int_0^{1-\xi_1}
+    \frac{\xi_2^{n_2}}{n_2!}\,
+    \frac{(1-\xi_1-\xi_2)^{n_3}}{n_3!}\,\ud\xi_2\,\ud\xi_1.
+\end{align*}
+Repeated integration by parts shows that
+\[
+\int_0^a\frac{\xi^m}{m!}\,\frac{(1-\xi)^n}{n!}\,\ud\xi
+    =\frac{a^{m+n}}{(m+n+1)!}
+\]
+so
+\[
+\int_0^{1-\xi_1}\frac{\xi_2^{n_2}}{n_2!}\,
+    \frac{(1-\xi_1-\xi_2)^{n_3}}{n_3!}\,\ud\xi_2
+    =\frac{(1-\xi_1)^{n_2+n_3}}{(n_2+n_3+1)!}
+\]
+and in turn
+\begin{align*}
+\int_0^1\frac{\xi_1^{n_1}}{n_1!}\int_0^{1-\xi_1}
+    \frac{\xi_2^{n_2}}{n_2!}\,
+    \frac{(1-\xi_1-\xi_2)^{n_3}}{n_3!}\,\ud\xi_2\,\ud\xi_1
+    &=\int_0^1\frac{\xi_1^{n_1}}{n_1!}\,
+    \frac{(1-\xi_1)^{n_2+n_3}}{(n_2+n_3+1)!}\,\ud\xi_1\\
+    &=\frac{1}{(n_1+n_2+n_3+2)!},
+\end{align*}
+implying the desired formula.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conforming linear elements}
+Let $\psi_1$, $\psi_2$, $\psi_3$ be the linear shape functions for the
+triangule~$K$, that is, polynomials of degree at most~$1$ in $x_1$~and $x_2$
+that satisfy
+\[
+\psi_i(\bs{a}_j)=\delta_{ij}\quad\text{for $i$, $j\in\{1,2,3\}$.}
+\]
+By considering the level sets of the barycentric coordinates as
+in~\cref{fig: barycentric}, we see that
+\[
+\psi_i(\bs{x})=\xi_i=\tfrac13+\bs{b}_i\cdot(\bs{x}-\bs{c})
+    \quad\text{for $i\in\{1,2,3\}$.}
+\]
+
+Consider a Poisson equation,
+\[
+-\nabla\cdot(a\nabla u)=f,
+\]
+with a possibly variable coefficient~$a=a(\bs{x})$.  In a finite element
+method using conforming P1 (piecewise-linear) elements, the entries~$A_{ij}$
+of the $3\times3$ element stiffness matrix are
+\[
+A_{ij}=\int_K a\nabla\psi_j\cdot\nabla\psi_i=\bs{b}_j\cdot\bs{b}_i\int_K a.
+\]
+If $a$ is constant, then $\int_Ka=a\times\area(K)$.  For a variable
+coefficient, we use the quadrature rule
+\[
+\int_Ka\approx\frac{\area(K)}{3}\sum_{i=1}^3 a(\bs{x}_i)
+\]
+where the quadrature points are
+\begin{equation}\label{eq: quad points}
+\begin{aligned}
+\bs{x}_1&=(1-2s)\bs{a}_1+s\bs{a}_2+s\bs{a}_3,\\
+\bs{x}_2&=s\bs{a}_1+(1-2s)\bs{a}_2+s\bs{a}_3,\\
+\bs{x}_3&=s\bs{a}_1+s\bs{a}_2+(1-2s)\bs{a}_3,
+\end{aligned}
+\end{equation}
+We see using \cref{lem: integral monomial} that, with any choice of~$s$,
+\[
+\int_K\xi_j=\frac{\area(K)}{3}=\frac{\area(K)}{3}\sum_{i=1}^3\xi_j(\bs{x}_i)
+\quad\text{for $j\in\{1,2,3\}$,}
+\]
+and therefore the quadrature rule is exact for polynomials in~$\bs{x}=(x,y)$ of
+degree~$1$ or less.  Also,
+\[
+\int_K\xi_j^2=\frac{\area(K)}{6}\quad\text{and}\quad
+\frac{\area(K)}{3}\sum_{i=1}^3\xi_j(\bs{x}_i)^2=\frac{\area(K)}{6}(12s^2-8s+2),
+\]
+which are equal iff $12s^2-8s+2=1$, or equivalently
+\begin{equation}\label{eq: s condition}
+(6s-1)(2s-1)=0.
+\end{equation}
+Moreover, if $(j,k)\in\{(1,2),(2,3),(3,1)\}$ then
+\[
+\int_K\xi_j\xi_k=\frac{\area(K)}{12}\quad\text{and}\quad
+\frac{\area(K)}{12}\sum_{i=1}^3\xi_j\xi_k=\frac{\area(K)}{3}(-12s^2+8s),
+\]
+which are equal iff $-12s^2+8s=1$, leading again to~\eqref{eq: s condition}.
+Thus, the quadrature rule is exact for polynomials of degree~$2$ iff $s=1/6$~or
+$s=1/2$.  These choices are illustrated in~\cref{fig: quad points}.
+
+\begin{figure}
+\caption{The quadrature points \eqref{eq: quad points} if $s=1/6$ (left) or
+$s=1/2$ (right).}\label{fig: quad points}
+\begin{center}
+\includegraphics[scale=1.0]{images/quadrature_points-crop.pdf}
+\end{center}
+\end{figure}
+
+The components of the element load vector are
+\[
+f_i=\int_Kf\psi_i\quad\text{for $i\in\{1,2,3\}$,}
+\]
+and if $f$ is constant then
+\[
+f_i=f\int_K\psi_i=f\int_K\xi_i=\tfrac13f\quad\text{for $i\in\{1,2,3\}$.}
+\]
+For a variable~$f$, we use the piecewise-linear approximation
+\[
+f(\bs{x})\approx\sum_{j=1}^3f(\bs{a}_j)\psi_i(\bs{x})
+\]
+and obtain
+\[
+\int_Kf\psi_i\approx\sum_{j=1}^3M_{ij}f(\bs{a}_j),
+\]
+where the entries of the mass matrix are
+\begin{equation}\label{eq: Mij const}
+M_{ij}=\int_K\psi_j\psi_i=\frac{\area(K)}{12}\times\begin{cases}
+    2&\text{if $i=j$,}\\
+    1&\text{if $i\ne j$.}
+\end{cases}
+\end{equation}
+In the case of a mass matrix with a variable coefficient, we use
+\begin{equation}\label{eq: Mij variable}
+\int_Kc\psi_j\psi_i\approx\sum_{\ell=1}^3m_{ij\ell} c(\bs{a}_\ell)
+    \quad\text{where}\quad m_{ij\ell}=\int_K\psi_\ell\psi_j\psi_i,
+\end{equation}
+and find that
+\[
+m_{ij\ell}=\frac{\area(K)}{60}\times\begin{cases}
+    6&\text{if $\ell=i=j$,}\\
+    2&\text{if $i=j\ne\ell$ or $i\ne j=\ell$ or $j\ne i=\ell$,}\\
+    1&\text{if $i\ne j$ and $j\ne\ell$ and $i\ne\ell$.}
+\end{cases}
+\]
+
+Now consider a boundary edge $E=[\bs{a}_1,\bs{a}_2]$ where a Neumann boundary
+condition is imposed.  We introduce the barycentric coordinates~$(\xi_1,\xi_2)$
+of a point~$\bs{x}\in\mathbb{R}^2$ with respect to~$E$ by the relations
+\[
+\bs{x}=\xi_1\bs{a}_1+\xi_2\bs{a}_2\quad\text{and}\quad\xi_1+\xi_2=1.
+\]
+The linear shape functions are then
+\[
+\psi^E_i(\bs{x})=\xi_i\quad\text{for $i\in\{1,2\}$,}
+\]
+and the entries of the boundary element load vector are
+\[
+g_{\uN i}=\int_Eg_{\uN}\psi^E_i\quad\text{for $i\in\{1,2\}$.}
+\]
+Arguing as in \cref{lem: integral monomial} we have
+\[
+\int_E\xi_1^{n_1}\xi_2^{n_2}=\len(E)\,\frac{n_1!n_2!}{(n_1+n_2+1)!},
+\]
+where $\len(E)=|\bs{a}_2-\bs{a}_1|$ denotes the length of~$E$,
+so the approximation
+\[
+g_{\uN}(\bs{x})\approx g_{\uN}(\bs{a}_1)\psi^E_1(\bs{x})
++g_{\uN}(\bs{a}_2)\psi^E_2(\bs{x})\quad\text{for $\bs{x}\in E$}
+\]
+gives
+\begin{equation}\label{eq: boundary element vector}
+g_{\uN i}\approx\sum_{j=1}^2M^E_{ij}g_{\uN}(\bs{a}_j)
+\quad\text{where}\quad M^E_{ij}=\frac{\len(E)}{6}\times\begin{cases}
+    2&\text{if $i=j$,}\\
+    1&\text{if $i\ne j$.}
+\end{cases}
+\end{equation}
+For a boundary mass matrix with a variable coefficient,
+\[
+M^E_{ij}=\int_E c\psi^E_j\psi^E_i
+\approx\sum_{\ell=1}^2m^E_{ij\ell}c(\bs{a}_\ell),
+\]
+where
+\[
+m^E_{ij\ell}=\int_E\psi_\ell\psi_i\psi_j=\frac{\len(E)}{24}\times\begin{cases}
+    6&\text{if $i=j=\ell$,}\\
+    2&\text{if $i=j\ne\ell$ or $i\ne j=\ell$ or $j\ne i=\ell$,}\\
+    1&\text{if $i\ne j$ and $j\ne\ell$ and $i\ne\ell$.}
+\end{cases}
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Nonconforming linear elements}\label{sec: nonconforming}
+
+\begin{figure}
+\caption{Numbering of the vertices and midpoints.}\label{fig: vertex midpt}
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+\draw[-] (0,0) -- (6,4) -- (-2,8) -- (0,0);
+\draw[fill] (0,0) circle (0.05);
+\node[below] at (0,0) {$\bs{a}_1$};
+\draw[fill] (6,4) circle (0.05);
+\node[right] at (6,4) {$\bs{a}_2$};
+\draw[fill] (-2,8) circle (0.05);
+\node[above] at (-2,8) {$\bs{a}_3$};
+\draw[fill] (3,2) circle (0.05);
+\node[below right] at (3,2) {$\bs{a}_4$};
+\draw[fill] (2,6) circle (0.05);
+\node[above right] at (2,6) {$\bs{a}_5$};
+\draw[fill] (-1,4) circle (0.05);
+\node[above right] at (-1,4) {$\bs{a}_6$};
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+Consider a non-conforming P1 finite element space for which we enforce
+continuity only at the midpoints of the edges.  For the triangle~$K$ with
+vertices $\bs{a}_1$, $\bs{a}_2$, $\bs{a}_3$ we denote the midpoints of the edges
+by
+\[
+\bs{a}_4=\tfrac12\bs{a}_1+\tfrac12\bs{a}_2,\quad
+\bs{a}_5=\tfrac12\bs{a}_2+\tfrac12\bs{a}_3,\quad
+\bs{a}_6=\tfrac12\bs{a}_3+\tfrac12\bs{a}_1,
+\]
+consistent with the ordering used by Gmsh; see \cref{fig: vertex midpt}.  The
+local degrees of freedom are the values of the finite element solution at the
+edge midpoints
+\[
+\mathsf{n}_1=\bs{a}_4,\quad\mathsf{n}_2=\bs{a}_5,\quad\mathsf{n}_3=\bs{a}_6,
+\]
+so we require linear shape functions $\psi_1$, $\psi_2$, $\psi_3$ satisfying
+\[
+\psi_i(\mathsf{n}_j)=\delta_{ij}\quad\text{for $i$, $j\in\{1,2,3\}$.}
+\]
+The barycentric coordinates of the edge midpoints are
+\[
+\mathsf{n}_1\leftrightarrow(\tfrac12,\tfrac12,0),\quad
+\mathsf{n}_2\leftrightarrow(0,\tfrac12,\tfrac12),\quad
+\mathsf{n}_3\leftrightarrow(\tfrac12,0,\tfrac12),
+\]
+so, assuming that $\bs{x}$ has barycentric coordinates $(\xi_1,\xi_2,\xi_3)$,
+\begin{equation}\label{eq: psi_i nonconforming}
+\begin{aligned}
+\psi_1(\bs{x})&=\xi_1+\xi_2-\xi_3=1-2\xi_3,\\
+\psi_2(\bs{x})&=\xi_2+\xi_3-\xi_1=1-2\xi_1,\\
+\psi_3(\bs{x})&=\xi_3+\xi_1-\xi_2=1-2\xi_2.
+\end{aligned}
+\end{equation}
+Therefore, remembering that $\nabla\xi_i=\bs{b}_i$~and
+$\bs{b}_1+\bs{b}_2+\bs{b_3}=\bs{0}$,
+\begin{align*}
+\nabla\psi_1(\bs{x})&=\bs{b}_1+\bs{b}_2-\bs{b}_3=-2\bs{b}_3,\\
+\nabla\psi_2(\bs{x})&=\bs{b}_2+\bs{b}_3-\bs{b}_1=-2\bs{b}_1,\\
+\nabla\psi_3(\bs{x})&=\bs{b}_3+\bs{b}_1-\bs{b}_2=-2\bs{b}_2.
+\end{align*}
+If we define $i_+$ and $i_-$ for $i\in\{1,2,3\}$ according to the table
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c|c|c}
+$i$&$i_+$&$i_-$\\
+\hline
+1&2&3\\
+2&3&1\\
+3&1&2
+\end{tabular}
+\end{center}
+then
+\begin{equation}\label{eq: grad psi_i}
+\psi_i(\bs{x})=\xi_i+\xi_{i_+}-\xi_{i_-}=1-2\xi_{i_-}
+\quad\text{and}\quad
+\nabla\psi_i(\bs{x})=-2\bs{b}_{i_-}.
+\end{equation}
+Thus, the entries of the element stiffness matrix
+\[
+A_{ij}=\int_Ka\nabla\psi_j\cdot\nabla\psi_i
+    =4(\bs{b}_{j_-}\cdot\bs{b}_{i_-})\int_Ka
+\quad\text{for $i$, $j\in\{1,2,3\}$.}
+\]
+
+Suppose that the values of the finite element solution~$u_h$ at the midpoints
+of the edges of~$K$ are
+\[
+U_i=u_h(\mathsf{n}_i)\quad\text{for $i\in\{1,2,3\}$,}
+\]
+so that
+\[
+u_h(\bs{x})=\sum_{i=1}^3U_i\psi_i(\bs{x})\quad\text{for $\bs{x}\in K$.}
+\]
+To determine the values of~$u_h$ at the vertices of~$K$, we observe that
+\[
+\psi_i(\bs{a}_j)=\xi_i(\bs{a}_j)+\xi_{i_+}(\bs{a}_j)-\xi_{i_-}(\bs{a}_j)
+    =\delta_{ij}+\delta_{i_+j}-\delta_{i_-j}
+\]
+so
+\[
+u_h(\bs{a}_j)=\sum_{i=1}^3U_i\psi_i(\bs{a}_j)
+    =U_j+U_{j_-}-U_{j_+}\quad\text{for $j\in\{1,2,3\}$.}
+\]
+
+Next, we consider the entries of the element mass matrix
+\[
+M_{ij}=\int_Kc\psi_j\psi_i.
+\]
+If the coefficient~$c$ is constant, then
+\begin{equation}\label{eq: nonconforming mass matrix}
+[M_{ij}]=\frac{c}{3}\,\area(K)
+    \begin{bmatrix}1&0&0\\ 0&1&0\\ 0&0&1\end{bmatrix}.
+\end{equation}
+In fact, the diagonal entries are
+\[
+M_{ii}=c\int_K(1-2\xi_{i_-})^2
+    =c\int_K(1-4\xi_{i_-}+4\xi_{i_-}^2)
+\]
+and, using \cref{lem: integral monomial},
+\[
+M_{ii}=c\area(K)\biggl(1-4\times2\times\frac{1}{3!}
+    +4\times2\times\frac{2}{4!}\biggr)
+    =\frac{c}{3}\,\area(K),
+\]
+whereas similar calculations show that $M_{12}=M_{23}=M_{31}=0$.  Alternatively,
+\eqref{eq: nonconforming mass matrix} follows from the fact that the quadrature
+rule
+\begin{equation}\label{eq: edge midpt rule}
+\int_K f\approx\frac{\area(K)}{3}\sum_{i=1}^3f(\mathsf{n}_i)
+\end{equation}
+is exact whenever $f$ is a quadratic polynomial.  If $c$ is variable, then
+we use its linear interpolant with respect to the $\mathsf{n}_\ell$ to obtain
+the approximation
+\[
+M_{ij}\approx\int_K\sum_{\ell=1}^3c(\mathsf{n}_\ell)\psi_\ell\psi_j\psi_i
+    =\sum_{\ell=1}^3 m_{ij\ell}c(\mathsf{n}_\ell)
+\quad\text{where}\quad m_{ij\ell}=\int_K\psi_\ell\psi_j\psi_i.
+\]
+We find that
+\[
+m_{ij\ell}=\frac{\area(K)}{15}\times\begin{cases}
+    3&\text{if $i=j=k$,}\\
+    1&\text{if $i=j\ne\ell$ or $i\ne j=\ell$ or $j\ne i=\ell$,}\\
+    -2&\text{if $i\ne j$ and $j\ne\ell$ and$\ell\ne i$,}
+\end{cases}
+\]
+so, putting $c_l=c(\mathsf{n}_\ell)$ for $\ell\in\{1,2,3\}$,
+\begin{align*}
+M_{11}\approx m_{111}c_1+m_{112}c_2+m_{113}c_3=\frac{\area(K)}{15}
+(3c_1+c_2+c_3),\\
+M_{22}\approx m_{221}c_1+m_{222}c_2+m_{223}c_3=\frac{\area(K)}{15}
+(c_1+3c_2+c_3),\\
+M_{33}\approx m_{331}c_1+m_{332}c_2+m_{333}c_3=\frac{\area(K)}{15}
+(c_1+c_2+3_3),\\
+\end{align*}
+with
+\begin{align*}
+M_{12}&=M_{21}=m_{121}c_1+m_{122}c_2+m_{123}c_3=\frac{\area(K)}{15}
+(c_1+c_2-2c_3),\\
+M_{13}&=M_{31}=m_{131}c_1+m_{132}c_2+m_{133}c_3=\frac{\area(K)}{15}
+(c_1-2c_2+c_3),\\
+M_{23}&=M_{32}=m_{231}c_1+m_{232}c_2+m_{233}c_3=\frac{\area(K)}{15}
+(-2c_1+c_2+c_3).
+\end{align*}
+
+Applying the rule~\eqref{eq: edge midpt rule} to $f\psi_i$ instead of just $f$
+yields an approximation for the components of the element load vector:
+\[
+f_i=\int_Kf\psi_i\approx\frac{\area(K)}{3}\,f(\mathsf{n}_i)
+\quad\text{for $i\in\{1,2,3\}$.}
+\]
+We obtain the same approximation for~$f_i$ by instead using linear
+interpolation,
+\[
+f(\bs{x})\approx\sum_{j=1}^3f(\mathsf{n}_j)\psi_j(\bs{x})
+    \quad\text{for $\bs{x}\in K$,}
+\]
+and then applying \eqref{eq: nonconforming mass matrix}:
+\[
+\int_Kf\psi_i\approx\sum_{j=1}^3f(\mathsf{n}_j)\int_K\psi_j\psi_i
+    =\frac{\area(K)}{3}\,f(\mathsf{n}_i).
+\]
+
+\begin{figure}
+\caption{Node labels for discussing a Neumann boundary condition. The boundary
+edge~$E$ and the opposite vertex~$\bs{a}_k$ are shown in blue.}
+\label{fig: Neumann bc}
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+\draw[-] (-2,8) -- (0,0) -- (6,4);
+\draw[-,thick,blue] (6,4) -- (-2,8);
+\draw[fill,blue] (0,0) circle (0.075);
+\node[below,blue] at (0,0) {$\bs{a}_k$};
+\draw[fill] (6,4) circle (0.075);
+\node[right] at (6,4) {$\bs{a}_{k_+}$};
+\draw[fill] (-2,8) circle (0.075);
+\node[above] at (-2,8) {$\bs{a}_{k_-}$};
+\draw[fill] (3,2) circle (0.075);
+\node[below right] at (3,2) {$\mathsf{n}_k$};
+\draw[fill] (2,6) circle (0.075);
+\node[above right] at (2,6) {$\mathsf{n}_{k_+}$};
+\draw[fill] (-1,4) circle (0.075);
+\node[above right] at (-1,4) {$\mathsf{n}_{k_-}$};
+\end{tikzpicture}
+\end{center}
+\end{figure}
+
+In the case of a Neumann boundary condition
+\[
+a\,\frac{\partial u}{\partial n}=\gN(\bs{x})\quad\text{for $\bs{x}\in\GammaN$,}
+\]
+we need to compute the entry of the boundary element load vector,
+\[
+g_i=\int_E\gN\psi_i\quad\text{for $1\le i\le 3$,}
+\]
+where the $\psi_i$ are the shape functions for the (unique) triangle~$K=K(E)$
+having $E$ as one of its edges.  Suppose that $\bs{a}_k$ is the vertex
+opposite~$E$ in~$K$, so that $E=[\bs{a}_{k_+},\bs{a}_{k_-}]$, as shown in
+\cref{fig: Neumann bc}.  A point~$\bs{x}$ lies on~$E$ iff its barycentric
+coordinates $(\xi_1,\xi_2,\xi_3)$ with respect to~$K(E)$ satisfy
+\[
+\xi_k=0,\qquad\xi_{k_+}+\xi_{k_-}=1,\qquad0\le\xi_{k_+}\le1,
+\]
+so the affine map $[0,1]\to E$ given by
+\[
+\xi_{k_-}\mapsto\bs{x}=\xi_{k_-}\bs{a}_{k_-}+(1-\xi_{k_-})\bs{a}_{k_+}
+\]
+provides a parametric representation of~$E$, yielding the formula
+\[
+g_i=\len(E)\int_0^1\gN\bigl(\bs{x}(\xi_{k_-})\bigr)
+    (1-2\xi_{i_-})\,\ud\xi_{k-},
+\]
+where $\len(E)=|\bs{a}_{k_-}-\bs{a}_{k_+}|$ denotes the length of~$E$.
+
+Consider the simplest case when $\gN$ is constant.  If $i=k$, then
+\[
+\int_0^1(1-2\xi_{i_-})\,\ud\xi_{k_-}
+    =\int_0^1(1-2\xi_{k_-})\,\ud\xi_{k_-}=0.
+\]
+If $i=k_+$ then $i_-=k$ so
+\[
+\int_0^1(1-2\xi_{i_-})\,\ud\xi_{k_-}
+    =\int_0^1(1-2\xi_k)\,\ud\xi_{k_-}
+    =\int_0^1((1-2\times0)\,\ud\xi_{k_-}=1.
+\]
+If $i=k_-$ then $i_-=k_+$ so
+\[
+\int_0^1(1-2\xi_{i_-})\,\ud\xi_{k_-}
+    =\int_0^1(1-2\xi_{k_+})\,\ud\xi_{k_-}
+    =\int_0^1(1-2(1-\xi_{k_-}))\,\ud\xi_{k_-}
+    =\int_0^1(2\xi_{k_-}-1)\,\ud\xi_{k_-}=0.
+\]
+Thus,
+\begin{equation}\label{eq: Neumann load vec nonconforming}
+g_k=0=g_{k_-}\quad\text{and}\quad g_{k_+}=\len(E)\gN.
+\end{equation}
+For a general~$\gN$, we can apply the midpoint rule and obtain
+\[
+g_k\approx 0\approx g_{k_-}\quad\text{and}\quad
+g_{k_+}\approx\len(E)\gN(\mathsf{n}_{k_+}).
+\]
+
+Next, we consider the element mass matrix for a boundary edge~$E$,
+\[
+M^E_{ij}=\int_Ec\psi_j\psi_i\quad\text{for $i$, $j\in\{1,2,3\}$.}
+\]
+Applying the midpoint rule over~$E$, and using the notation of
+\cref{fig: Neumann bc},
+\[
+M^E_{ij}\approx\len(E)c(\mathsf{n}_{k_+})\psi_j(\mathsf{n}_{k_+})
+    \psi_i(\mathsf{n}_{k_+})
+    =\begin{cases}
+    \len(E)c(\mathsf{n}_{k_+}),&\text{if $i=j=k_+$,}\\
+    0,&\text{otherwise}
+\end{cases}
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A mixed method}
+We consider Darcy flow with pressure~$p$ and fluid flux~$\bs{u}$, so that
+\[
+\bs{u}= -a\nabla p\quad\text{and}\quad\nabla\cdot\bs{u}=f
+    \quad\text{in $\Omega$,}
+\]
+with the boundary conditions
+\[
+\text{$p=g_{\uD}$ on $\Gamma_{\uD}$}\qquad\text{and}\qquad
+\text{$\bs{n}\cdot\bs{u}=g_{\uN}$ on $\Gamma_{\uN}$.}
+\]
+For test functions $\bs{v}$~and $w$,
+\[
+\int_\Omega a^{-1}\bs{u}\cdot\bs{v}=-\int_\Omega(\nabla p)\cdot\bs{v}
+    =\int_\Omega p\nabla\cdot\bs{v}
+    -\int_{\partial\Omega}p\bs{n}\cdot\bs{v}
+\]
+and
+\[
+\int_\Omega(\nabla\cdot\bs{u})w=\int_\Omega fw.
+\]
+Enforcing the essential boundary condition $\bs{n}\cdot\bs{u}=g_{\uN}$
+on~$\Gamma_{\uN}$, and assuming that the test function~$\bs{v}$ satisfies
+$\bs{n}\cdot\bs{v}=0$ on~$\Gamma_{\uN}$, we have
+\begin{align*}
+\int_{\Omega}a^{-1}\bs{u}\cdot\bs{v}-\int_\Omega p\,(\nabla\cdot\bs{v})
+    &=-\int_{\Gamma_{\uD}}g_{\uD}\bs{n}\cdot\bs{v},\\
+-\int_\Omega(\nabla\cdot\bs{u})w&=\int_\Omega fw.
+\end{align*}
+
+For a given triangulation of~$\Omega$, let $\mathrm{RT}_h$ be the space of
+lowest-order Raviart--Thomas elements, and $W_h$ the space of piecewise
+constants.  The $\mathrm{RT}_h$ shape functions on an element with vertices
+$\bs{a}_1$, $\bs{a}_2$, $\bs{a}_3$ are of the form
+\[
+\bs{\psi}_j(\bs{x})=C_j(\bs{x}-\bs{a}_j)\quad\text{for $j\in\{1,2,3\}$.}
+\]
+For each edge~$E$ in the mesh we choose a unit normal~$\bs{n}^E$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Linear elasticity}
+We consider an elastic material with a displacement field
+$\bs{u}=\bs{u}(\bs{x})$ and strain tensor
+\[
+\bs{\varepsilon}=\bs{\varepsilon}[\bs{u}]
+    =\tfrac12(\nabla\bs{u}+\nabla\bs{u}^\top),
+\]
+where
+\[
+(\nabla\bs{u})_{pq}=\frac{\partial u_p}{\partial x_q}=\partial_qu_p
+\quad\text{and}\quad
+(\nabla\bs{u})^\top_{pq}=(\nabla\bs{u})_{qp},
+\]
+so
+\[
+\varepsilon_{pq}=\tfrac12(\partial_qu_p+\partial_pu_q)=\varepsilon_{qp}.
+\]
+The stress--strain relation is assumed to be of the form
+\begin{equation}\label{eq: stress-strain}
+\sigma_{pq}=\lambda\delta_{pq}\varepsilon_{rr}+2\mu\varepsilon_{pq},
+\end{equation}
+where the Lam\'e parameters $\lambda$~and $\mu$ are positive. The equation of
+motion is then
+\[
+\rho\ddot{\bs{u}}-\nabla\cdot\bs{\sigma}=\bs{f}(\bs{x},t)
+    \quad\text{for $\bs{x}\in\Omega$ and $t\ge0$,}
+\]
+assuming a body force~$\bs{f}$.  We will consider only the steady-state case,
+\begin{equation}\label{eq: linear elasticity a}
+-\nabla\cdot\bs{\sigma}=f(\bs{x})\quad\text{for $\bs{x}\in\Omega$,}
+\end{equation}
+with boundary conditions
+\begin{equation}\label{eq: linear elasticity b}
+\begin{aligned}
+\bs{u}&=\bs{g}_{\mathrm{D}}(\bs{x})&&\text{for $\bs{x}\in\GammaD$,}\\
+\bs{n}\cdot\bs{\sigma}&=\bs{g}_{\mathrm{N}}(\bs{x})&&\text{for
+$\bs{x}\in\GammaN$.}
+\end{aligned}
+\end{equation}
+Since $\varepsilon_{rr}=\partial_ru_r=\nabla\cdot\bs{u}$, if $\lambda$ and
+$\mu$ are constant we find that
+\[
+\nabla\cdot\bs{\sigma}=\mu\nabla^2\bs{u}+(\lambda+\mu)\nabla(\nabla\cdot\bs{u}),
+\]
+whereas for variable $\lambda$ and $\mu$,
+\[
+\nabla\cdot\bs{\sigma}=\nabla(\lambda\nabla\cdot\bs{u})
+    +\nabla\cdot(\mu\nabla\bs{u})+\nabla\cdot\bigl(\mu(\nabla\bs{u})^\top\bigr).
+\]
+
+To derive the weak formulation
+of~\eqref{eq: linear elasticity a}--\eqref{eq: linear elasticity b}, we
+introduce a vector test function~$\bs{v}$ and apply the divergence theorem as
+follows:
+\begin{align*}
+\int_\Omega(\nabla\cdot\bs{\sigma})\cdot\bs{v}
+    &=\int_\Omega(\partial_p\sigma_{pq})v_q
+    =\int_\Omega\bigl[\partial_p(\sigma_{pq}v_q)-\sigma_{pq}\partial_pv_q\bigr]
+=\int_{\partial\Omega}n_p\sigma_{pq}v_q-\int_\Omega\sigma_{pq}\partial_pv_q\\
+    &=\int_{\partial\Omega}(\bs{n}\cdot\bs{\sigma})\cdot\bs{v}
+    -\int_\Omega\bs{\sigma}\mathbin{:}\nabla\bs{v}.
+\end{align*}
+Since
+\[
+\bs{\sigma}\mathbin{:}\nabla\bs{v}=\lambda(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +2\mu\bs{\varepsilon}[\bs{u}]\mathbin{:}\bs{\varepsilon}[\bs{v}],
+\]
+the weak solution~$\bs{u}$ must satisfy $\bs{u}=\bs{g}_{\uD}$ on~$\GammaD$, and
+\[
+\int_\Omega\Bigl(\lambda(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +2\mu\bs{\varepsilon}[\bs{u}]\mathbin{:}\bs{\varepsilon}[\bs{v}]\Bigr)
+    =\int_\Omega\bs{f}\cdot\bs{v}+\int_{\GammaN}\bs{g}_{\uN}\cdot\bs{v}
+\quad\text{whenever $\bs{v}=\bs{0}$ on $\GammaD$.}
+\]
+
+In a 2D problem, we have
+\[
+\bs{u}(\bs{x})=\begin{bmatrix}u_1(\bs{x})\\ u_2(\bs{x})\end{bmatrix}
+    \approx\bs{u}_h(\bs{x})
+    =\begin{bmatrix}u_{1h}(\bs{x})\\ u_{2h}(\bs{x})\end{bmatrix}
+\]
+Consider a triangular element~$K$ with vertices $\mathsf{n}_1$, $\mathsf{n}_2$,
+$\mathsf{n}_3$ and scalar linear shape functions 
+\[
+\psi_j(\bs{x})=\xi_j\quad\text{for $j\in\{1,2,3\}$.}
+\]
+We define the vector shape functions
+\begin{equation}\label{eq: vector shape}
+\bs{\psi}_1=\psi_1\,\bs{e}_1,\quad
+\bs{\psi}_2=\psi_2\,\bs{e}_1,\quad
+\bs{\psi}_3=\psi_3\,\bs{e}_1,\quad
+\bs{\psi}_4=\psi_1\,\bs{e}_2,\quad
+\bs{\psi}_5=\psi_2\,\bs{e}_2,\quad
+\bs{\psi}_6=\psi_3\,\bs{e}_2,
+\end{equation}
+and the corresponding $6\times6$ element matrices
+\[
+A_{ij}=\int_K\lambda(\nabla\cdot\bs{\psi}_j)(\nabla\cdot\bs{\psi}_i)
+\quad\text{and}\quad
+B_{ij}=\int_K2\mu\varepsilon[\bs{\psi}_j]:\varepsilon[\bs{\psi}_i].
+\]
+Recall that
+\[
+\nabla\psi_j(\bs{x})=\bs{b}_j=\begin{bmatrix}b_{1j}\\ b_{2j}\end{bmatrix}
+\quad\text{so}\quad\partial_p\psi_j=b_{pj},
+\]
+so
+\[
+\nabla\cdot\bs{\psi}_j=\partial_1\psi_j=b_{1j}
+\quad\text{and}\quad
+\nabla\cdot\bs{\psi}_{j+3}=\partial_2\psi_j=b_{2j}
+\quad\text{for $1\le j\le3$.}
+\]
+Thus, for $i$, $j\in\{1,2,3\}$,
+\[
+\begin{aligned}
+A_{ij}&=b_{1j}b_{1i}\int_K\lambda,&\quad 
+A_{i,j+3}&=b_{2j}b_{1i}\int_K\lambda,\\
+A_{i+3,j}&=b_{1j}b_{2i}\int_K\lambda,&\quad 
+A_{i+3,j+3}&=b_{2j}b_{2i}\int_K\lambda.
+\end{aligned}
+\]
+
+Since
+\[
+\nabla\bs{\psi}_j=\begin{bmatrix}
+\partial_1(\bs{\psi}_j)_1&\partial_2(\bs{\psi}_j)_1 \\           
+\partial_1(\bs{\psi}_j)_2&\partial_2(\bs{\psi}_j)_2\end{bmatrix}
+\]
+we have
+\[
+\nabla\bs{\psi}_j=\begin{bmatrix}
+b_{1j}&b_{2j}\\0&0\end{bmatrix}
+\quad\text{and}\quad
+\nabla\bs{\psi}_{j+3}=\begin{bmatrix}
+0&0\\b_{1j}&b_{2j}\end{bmatrix}
+\quad\text{for $1\le j\le 3$,}
+\]
+so
+\[
+\bs{\varepsilon}[\bs{\psi}_j]=\begin{bmatrix}
+b_{1j}&\tfrac12b_{2j}\\
+\tfrac12b_{2j}&0 \end{bmatrix}
+\quad\text{and}\quad
+\bs{\varepsilon}[\bs{\psi}_{j+3}]=\begin{bmatrix}
+0&\tfrac12b_{1j}\\
+\tfrac12b_{1j}&b_{2j} \end{bmatrix}\quad\text{for $1\le j\le 3$.}
+\]
+It follows that
+\begin{align*}
+\bs{\varepsilon}[\bs{\psi}_j]:\bs{\varepsilon}[\bs{\psi}_i]
+    &=b_{1j}b_{1i}+\tfrac14b_{2j}b_{2i}+\tfrac14b_{2j}b_{2i}
+    =b_{1j}b_{1i}+\tfrac12 b_{2j}b_{2i},\\
+\bs{\varepsilon}[\bs{\psi}_{j+3}]:\bs{\varepsilon}[\bs{\psi}_i]
+    &=\tfrac14b_{1j}b_{2i}+\tfrac14b_{1j}b_{2i}=\tfrac12b_{1j}b_{2i},\\
+\bs{\varepsilon}[\bs{\psi}_j]:\bs{\varepsilon}[\bs{\psi}_{i+3}]
+    &=\tfrac14b_{2j}b_{1i}+\tfrac14b_{2j}b_{1i}=\tfrac12b_{2j}b_{1i},\\
+\bs{\varepsilon}[\bs{\psi}_{j+3}]:\bs{\varepsilon}[\bs{\psi}_{i+3}]
+    &=\tfrac14b_{1j}b_{1i}+\tfrac14b_{1j}b_{1i}+b_{2j}b_{2i}
+    =\tfrac12b_{1j}b_{1i}+b_{2j}b_{2i},
+\end{align*}
+and hence, for $i$, $j\in\{1,2,3\}$,
+\[
+\begin{aligned}
+B_{ij}&=(2b_{1j}b_{1i}+b_{2j}b_{2i})\int_K\mu,&\quad
+B_{i,j+3}&=b_{1j}b_{2i}\int_K\mu,\\
+B_{i+3,j}&=b_{2j}b_{1i}\int_K\mu,&\quad
+B_{i+3,j+3}&=(b_{1j}b_{1i}+2b_{2j}b_{2i})\int_K\mu.
+\end{aligned}
+\]
+
+The $6\times6$ element mass matrix is defined by
+\begin{equation}\label{eq: elasticity M}
+M_{ij}=\int_K c\bs{\psi}_j\cdot\bs{\psi}_i
+\end{equation}
+We see that if $i$, $j\in\{1,2,3\}$ then
+\[
+M_{ij}=M_{i+3,j+3}=\int_Kc\psi_j\psi_i
+\]
+is just the mass matrix for the Poisson problem, and 
+\[
+M_{i+3,j}=M_{i,j+3}=0.
+\]
+The components of the $6$-dimensional element load vector are
+\begin{equation}\label{eq: elasticity load vec}
+f_i=\int_K\bs{f}\cdot{\bs{\psi}_i},
+\end{equation}
+so if $1\le i\le3$ then
+\[
+f_i=\int_Kf_1\psi_i\quad\text{and}\quad
+f_{i+3}=\int_Kf_2\psi_i,
+\]
+which also have the same form as for the Poisson problem.
+
+For a boundary edge~$E=[\mathsf{n}^E_1,\mathsf{n}^E_2]$, the associated 
+$4$-dimensional load vector is
+\[
+g_{\uN,i}=\int_E\bs{g}_{\uN}\cdot\bs{\psi}^E_i,
+\]
+where 
+\[
+\bs{\psi}^E_1=\psi^E_1\bs{e}_1,\qquad
+\bs{\psi}^E_2=\psi^E_2\bs{e}_1,\qquad
+\bs{\psi}^E_3=\psi^E_1\bs{e}_2,\qquad
+\bs{\psi}^E_4=\psi^E_2\bs{e}_2.
+\]
+Thus, if $1\le i\le2$ then
+\[
+g_{\uN,i}=\int_Kg_{\uN,1}\psi^E_i\quad\text{and}\quad
+g_{\uN,i+3}=\int_Kg_{\uN,2}\psi^E_i.
+\]
+In particular, since $\int_E\psi^E_i=\tfrac12\len(E)$, if $\bs{g}_{\uN}$ is a 
+constant vector, then
+\[
+g_{\uN,i}=\tfrac12\len(E)g_{\uN,1}
+\quad\text{and}\quad
+g_{\uN,i+3}=\tfrac12\len(E)g_{\uN,2}.
+\]
+For a variable~$\bs{g}_{\uN}$, we recall \eqref{eq: boundary element vector}
+and use
+\[
+g_{\uN,i}\approx\sum_{j=1}^2M^E_{ij}g_{\uN,1}(\bs{a}_j)
+\quad\text{and}\quad
+g_{\uN,i+2}\approx\sum_{j=1}^2M^E_{ij}g_{\uN,2}(\bs{a}_j).
+\]
+
+Let the free nodes be $\mathsf{n}_r$ for $1\le r\le M\free$, and fixed nodes 
+(on $\GammaD$) be $\mathsf{n}_r$ for $M\free+1\le r\le M=M\free+M\fix$.  Denote 
+the nodal basis function associated with~$\mathsf{n}_r$ by~$\chi_r$ so that
+$\chi_r(\mathsf{n}_s)=\delta_{rs}$, and put
+\[
+\begin{bmatrix}U_{1r}\\ U_{2r}\end{bmatrix}=\bs{u}_h(\mathsf{n}_r)
+\quad\text{for $1\le r\le M$.}
+\]
+We define the vectors
+\[
+\bs{U}_p\free=[U_{pr}]_{1\le r\le M\free}
+\quad\text{and}\quad
+\bs{U}_p\fix=[U_{p,M\free+r}]_{1\le r\le M\fix}\quad\text{for $p\in\{1,2\}$,}
+\]
+and combine these to form the complete nodal vector
+\[
+\bs{U}=\left[\begin{array}{c}
+\bs{U}_1\free\\ \bs{U}_2\free\\ 
+\bs{U}_1\fix\\ \bs{U}_2\fix\end{array}\right].
+\]
+The matrix assembly process is organised to produce the global stiffness matrix
+\[
+\renewcommand{\arraystretch}{1.2}
+\bs{S}=\left[\begin{array}{c|c|c|c}
+\bs{S}_{11}\free&\bs{S}_{12}\free&\bs{S}_{11}\fix&\bs{S}_{12}\fix\\
+\hline
+\bs{S}_{21}\free&\bs{S}_{22}\free&\bs{S}_{21}\fix&\bs{S}_{22}\fix
+\end{array}\right].
+\]
+To satisfy the essential boundary condition, we must put
+\[
+\bs{U}\fix_p=\bs{g}_{\uD,p}\fix
+    \equiv[\bs{g}_{\uD}(\mathsf{n}_{M\free+r})]_{1\le r\le M\fix}
+\quad\text{for $p\in\{1,2\}$,}
+\]
+and then require
+\[
+\bs{S}\bs{U}=\bs{f}\free+\bs{g}_{\uN}\free,
+\]
+that is, after eliminating $\bs{U}\fix$,
+\[
+\renewcommand{\arraystretch}{1.2}
+\left[\begin{array}{c|c}
+\bs{S}_{11}\free&\bs{S}_{12}\free\\ \hline
+\bs{S}_{21}\free&\bs{S}_{22}\free\end{array}\right]
+\left[\begin{array}{c}\bs{U}_1\free\\ \hline \bs{U}_2\free\end{array}\right]
+=\left[\begin{array}{c}\bs{f}_1\free\\ \hline \bs{f}_2\free\end{array}\right]
++\left[\begin{array}{c}\bs{g}_{\uN,1}\free\\ \hline 
+    \bs{g}_{\uN,2}\free\end{array}\right]
+    -\left[\begin{array}{c|c}
+\bs{S}_{11}\fix&\bs{S}_{12}\fix\\ \hline
+\bs{S}_{21}\fix&\bs{S}_{22}\fix\end{array}\right]
+\left[\begin{array}{c}\bs{g}_{\uD,1}\fix\\ \hline 
+    \bs{g}_{\uD,2}\fix\end{array}\right]
+\]
+
+\section{Another formulation for linear elasticity}
+
+Since
+\[
+\partial_p\sigma_{pq}=\partial_p(\lambda\delta_{pq}\varepsilon_{rr}
+    +2\mu\varepsilon_{pq})
+    =\partial_q(\lambda\partial_ru_r)
+    +\partial_p(\mu\partial_pu_q+\mu\partial_qu_p)
+\]
+and
+\[
+\partial_p(\mu\partial_qu_p)
+    =(\partial_p\mu)(\partial_qu_p)+\mu\partial_p(\partial_qu_p)
+    =(\partial_p\mu)(\partial_qu_p)+\mu\partial_q(\partial_pu_p),
+\]
+we have
+\[
+\partial_p\sigma_{pq}=\partial_q(\lambda\partial_pu_p)
+    +\partial_p(\mu\partial_pu_q)+(\partial_p\mu)(\partial_qu_p)
+    +\mu\partial_q(\partial_pu_p),
+\]
+or in other words,
+\[
+\nabla\cdot\bs{\sigma}=\nabla(\lambda\nabla\cdot\bs{u})
+    +\nabla\cdot(\mu\nabla\bs{u})+(\nabla\mu)\cdot(\nabla\bs{u})^\top
+    +\mu\nabla(\nabla\cdot\bs{u}).
+\]
+Furthermore, $\partial_q(\mu\partial_pu_p)=(\partial_q\mu)(\partial_pu_p)
++\mu\partial_q\partial_pu_p$ so
+\[
+\nabla(\mu\nabla\cdot\bs{u})=(\nabla\mu)(\nabla\cdot\bs{u})
+    +\mu\nabla(\nabla\cdot\bs{u})
+\]
+and hence
+\begin{align*}
+\nabla\cdot\bs{\sigma}&=\nabla(\lambda\nabla\cdot\bs{u})
+    +\nabla\cdot(\mu\nabla\bs{u})+(\nabla\mu)\cdot(\nabla\bs{u})^\top
+    +\nabla(\mu\nabla\cdot\bs{u})-(\nabla\mu)(\nabla\cdot\bs{u})\\
+&=\nabla\cdot(\mu\nabla\bs{u})+\nabla\bigl((\mu+\lambda)\nabla\cdot\bs{u}\bigr)
+    +\nabla\mu\cdot(\nabla\bs{u})^\top-(\nabla\mu)(\nabla\cdot\bs{u}).
+\end{align*}
+Taking the dot product of the first two terms with a test function $\bs{v}$, we
+find that
+\begin{align*}
+\bigl[\nabla\cdot(\mu\nabla\bs{u})
+    &+\nabla\bigl((\mu+\lambda)\nabla\cdot\bs{u}\bigr)\bigr]\cdot\bs{v}
+    =\sum_{p=1}^2\sum_{q=1}^2\bigl[\partial_p(\mu\partial_pu_q)
+    +\partial_q\bigl((\mu+\lambda)\partial_pu_p\bigr)\bigr]v_q\\
+    &=\sum_{p=1}^2\sum_{q=1}^2\bigl[\partial_p\bigl(
+    \mu(\partial_pu_q)v_q+(\mu+\lambda)(\partial_pu_p)v_q\bigr)
+    -\mu(\partial_pu_q)(\partial_pv_q)
+    -(\mu+\lambda)(\partial_qv_q)(\partial_pv_p)\bigr]\\
+    &=\nabla\cdot\bigl(\mu(\nabla\bs{u})\cdot\bs{v}
+    +(\mu+\lambda)(\nabla\cdot\bs{u})\bs{v})\bigr)
+    -\mu\nabla\bs{u}:\nabla\bs{v}
+    -(\mu+\lambda)(\nabla\cdot\bs{u})(\nabla\cdot\bs{v}),
+\end{align*}
+and for the last two terms,
+\begin{align*}
+\bigl[(\nabla\mu)\cdot(\nabla\bs{u})^\top&-(\nabla\mu)(\nabla\cdot\bs{u})\bigr]
+    \cdot\bs{v}
+=\sum_{p=1}^2\sum_{q=1}^2\bigl(\partial_p\mu\,\partial_qu_p
+    -\partial_q\mu\, \partial_pu_p\bigr)v_q\\
+&=\sum_{p=1}^2
+    \bigl(\partial_p\mu\,\partial_1u_p-\partial_1\mu\,\partial_pu_p\bigr)v_1
++\sum_{p=1}^2
+    \bigl(\partial_p\mu\,\partial_2u_p-\partial_2\mu\,\partial_pu_p\bigr)v_2\\
+&=\bigl(\partial_2\mu\,\partial_1u_2-\partial_1\mu\,\partial_2u_2\bigr)v_1
++\bigl(\partial_1\mu\,\partial_2u_1-\partial_2\mu\,\partial_1u_1\bigr)v_2\\
+&=-\begin{bmatrix}-\partial_2\mu\\ \partial_1\mu\end{bmatrix}\cdot
+\begin{bmatrix}\partial_1u_2\\ \partial_2u_2 \end{bmatrix}v_1
+-\begin{bmatrix}\partial_1\mu\\ \partial_2\mu \end{bmatrix}\cdot
+\begin{bmatrix}-\partial_2u_1\\ \partial_1u_1 \end{bmatrix}v_2,
+\end{align*}
+or in other words,
+\[
+\bigl[\nabla\mu\cdot(\nabla\bs{u})^\top-(\nabla\mu)(\nabla\cdot\bs{u})\bigr]
+    \cdot\bs{v}
+=-(\nabla\mu)\rot\cdot(\nabla u_2)\,v_1
+    -(\nabla\mu)\cdot(\nabla u_1)\rot\,v_2,
+\]
+where we have used the notation
+\[
+\bs{a}\rot=\begin{bmatrix}-a_2\\ a_1 \end{bmatrix}
+\quad\text{for $\bs{a}\in\mathbb{R}^2$.}
+\]
+Thus, $\bs{a}\rot$ is the vector obtained by rotating~$\bs{a}$
+counterclockwise through a right angle.
+
+It follows that
+\begin{multline*}
+-(\nabla\cdot\bs{\sigma})\cdot\bs{v}=\mu\nabla\bs{u}:\nabla\bs{v}
+    +(\mu+\lambda)(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +(\nabla\mu)\rot\cdot(\nabla u_2)\,v_1
+    +(\nabla\mu)\cdot(\nabla u_1)\rot\,v_2\\
+    -\nabla\cdot\bigl(\mu(\nabla\bs{u})\cdot\bs{v}
+    +(\mu+\lambda)(\nabla\cdot\bs{u})\bs{v})\bigr)
+\end{multline*}
+and hence
+\begin{multline}\label{eq: alt elasticity}
+\int_\Omega(-\nabla\cdot\bs{\sigma})\cdot\bs{v}=\int_\Omega\Bigl(
+    \mu\nabla\bs{u}:\nabla\bs{v}+(\mu+\lambda)
+        (\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +(\nabla\mu)\rot\cdot(\nabla u_2)\,v_1
+    +(\nabla\mu)\cdot(\nabla u_1)\rot\,v_2\Bigr)\\
+    -\int_{\partial\Omega}\Bigl(\mu\bs{n}\cdot(\nabla\bs{u})\cdot\bs{v}
+    +(\mu+\lambda)(\nabla\cdot\bs{u})(\bs{n}\cdot\bs{v})\Bigr).
+\end{multline}
+Since
+\[
+\nabla\cdot\bigl(u_2v_1(\nabla\mu)\rot\bigr)
+    =u_2\nabla\cdot\bigl(v_1(\nabla\mu)\rot\bigr)
+    +(\nabla u_2)\cdot\bigl(v_1(\nabla\mu)\rot\bigr)
+\]
+we have
+\[
+(\nabla\mu)\rot\cdot(\nabla u_2)\,v_1
+    =\nabla\cdot\bigl(u_2v_1(\nabla\mu)\rot\bigr)
+    -u_2\nabla\cdot\bigl(v_1(\nabla\mu)\rot\bigr).
+\]
+Furthermore,
+\[
+\nabla\cdot\bigl(v_1(\nabla\mu)\rot\bigr)
+    =(\nabla v_1)\cdot(\nabla\mu)\rot
+    +v_1\nabla\cdot(\nabla\mu)\rot
+\]
+and
+\[
+\nabla\cdot(\nabla\mu)\rot=\partial_1(-\partial_2\mu)
+    +\partial_2(\partial_1\mu)=0.
+\]
+Therefore, noting that $\bs{a}\cdot\bs{b}\rot=-\bs{a}\rot\cdot\bs{b}$,
+\[
+(\nabla\mu)\rot\cdot(\nabla u_2)\,v_1
+    =\nabla\cdot\bigl(u_2v_1(\nabla\mu)\rot\bigr)
+    -u_2(\nabla v_1)\cdot(\nabla\mu)\rot
+    =\nabla\cdot\bigl(u_2v_1(\nabla\mu)\rot\bigr)
+    +u_2(\nabla\mu)\cdot(\nabla v_1)\rot,
+\]
+so
+\begin{multline}\label{eq: variable mu}
+\int_\Omega(-\nabla\cdot\bs{\sigma})\cdot\bs{v}=\int_\Omega\Bigl(
+    \mu\nabla\bs{u}:\nabla\bs{v}+(\mu+\lambda)
+        (\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +(\nabla\mu)\cdot[(\nabla u_1)\rot\,v_2
+    +u_2(\nabla v_1)\rot]\Bigr)\\
+    -\int_{\partial\Omega}\Bigl(\mu\bs{n}\cdot(\nabla\bs{u})\cdot\bs{v}
+    +(\mu+\lambda)(\nabla\cdot\bs{u})(\bs{n}\cdot\bs{v})
+    -u_2v_1\,\bs{n}\cdot(\nabla\mu)\rot\Bigr),
+\end{multline}
+Notice that the integral over~$\partial\Omega$ vanishes if $\bs{v}\equiv0$
+on~$\partial\Omega$, which will be the case for a pure Dirichlet problem.
+
+For an alternative approach, we observe that
+\[
+2\bs{\varepsilon}[\bs{u}]:\bs{\varepsilon}[\bs{v}]
+=\frac12\sum_{p=1}^2\sum_{q=1}^2(\partial_pu_q+\partial_qu_p)
+(\partial_pv_q+\partial_qv_p)
+\]
+and, by swapping dummy indices,
+\[
+\sum_{p=1}^2\sum_{q=1}^2\partial_pu_q\,\partial_pv_q
+    =\sum_{p=1}^2\sum_{q=1}^2\partial_qu_p\,\partial_qv_p
+    =\nabla\bs{u}:\nabla\bs{v}
+\]
+with
+\[
+\sum_{p=1}^2\sum_{q=1}^2\partial_pu_q\,\partial_qv_p
+    =\sum_{p=1}^2\sum_{q=1}^2\partial_qu_p\,\partial_pv_q.
+\]
+Thus,
+\[
+2\bs{\varepsilon}[\bs{u}]:\bs{\varepsilon}[\bs{v}]-\nabla\bs{u}:\nabla\bs{v}
+    =\sum_{p=1}^2\sum_{q=1}^2\partial_pu_q\,\partial_qv_p,
+\]
+whereas
+\[
+(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})=\sum_{p=1}^2\sum_{q=1}^2
+    \partial_pu_p\,\partial_qv_q,
+\]
+so
+\begin{align*}
+2\bs{\varepsilon}[\bs{u}]:\bs{\varepsilon}[\bs{v}]&-\nabla\bs{u}:\nabla\bs{v}
+    -(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    =(\partial_1u_2\,\partial_2v_1+\partial_2u_1\,\partial_1v_2)
+    -(\partial_1u_1\,\partial_2v_2+\partial_2u_2\,\partial_1v_1)\\
+    &=-[(-\partial_2u_1)(\partial_1v_2)+(\partial_1u_1)(\partial_2v_2)]
+    -[(\partial_1u_2)(-\partial_2v_1)+(\partial_2u_2)(\partial_1v_1)]\\
+    &=-(\nabla u_1)\rot\cdot(\nabla v_2)
+        -(\nabla u_2)\cdot(\nabla v_1)\rot.
+\end{align*}
+It follows that
+\begin{align*}
+\lambda(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
++2\mu\bs{\varepsilon}[\bs{u}]:\bs{\varepsilon}[\bs{v}]
+    &=\mu\nabla\bs{u}:\nabla\bs{v}
+    +(\lambda+\mu)(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})\\
+    &\qquad{}-\mu[(\nabla u_1)\rot\cdot(\nabla v_2)
+        +(\nabla u_2)\cdot(\nabla v_1)\rot)].
+\end{align*}
+Since $\nabla\cdot(\nabla u_1)\rot
+=\partial_1(-\partial_2u_1)+\partial_2(\partial_1u_1)=0$,
+\[
+\nabla\cdot\bigl(\mu v_2(\nabla u_1)\rot\bigr)
+    =\nabla(\mu v_2)\cdot(\nabla u_1)\rot+\mu v_2\nabla\cdot(\nabla u_1)\rot
+    =\mu(\nabla v_2)\cdot(\nabla u_1)\rot+v_2(\nabla\mu)\cdot(\nabla u_1)\rot
+\]
+and thus
+\[
+\mu(\nabla u_1)\rot\cdot(\nabla v_2)
+    =\nabla\cdot\bigl(\mu(\nabla u_1)\rot v_2\bigr)
+    -(\nabla\mu)\cdot((\nabla u_1)\rot v_2\bigr).
+\]
+Similarly,
+\[
+\mu(\nabla u_2)\cdot(\nabla v_1)\rot
+    =\nabla\cdot\bigl(\mu u_2(\nabla v_1)\rot\bigr)
+    -(\nabla\mu)\cdot\bigl(u_2(\nabla v_1)\rot\bigr),
+\]
+implying that
+\[
+\mu[(\nabla u_1)\rot\cdot(\nabla v_2)+(\nabla u_2)\cdot(\nabla v_1)\rot)]
+=\nabla\cdot\bigl[\mu(\nabla u_1)\rot v_2+\mu u_2(\nabla v_1)\rot\bigr]
+-(\nabla\mu)\cdot\bigl[(\nabla u_1)\rot v_2+u_2(\nabla v_1)\rot]
+\]
+and so
+\begin{multline*}
+-\int_\Omega\mu[(\nabla u_1)\rot\cdot(\nabla v_2)
+        +(\nabla u_2)\cdot(\nabla v_1)\rot)]
+    =\int_\Omega(\nabla\mu)\cdot\bigl[(\nabla u_1)\rot v_2
+    +u_2(\nabla v_1)\rot]\\
+    -\int_{\partial\Omega}\mu\bigl[
+    \bs{n}\cdot(\nabla u_1)\rot v_2+u_2\,\bs{n}\cdot(\nabla v_1)\rot\bigr],
+\end{multline*}
+Thus,
+\begin{align*}
+\int_\Omega\Bigl(\lambda(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+&+2\mu\bs{\varepsilon}[\bs{u}]:\bs{\varepsilon}[\bs{v}]\Bigr)\\
+    &=\int_\Omega\Bigl(\mu\nabla\bs{u}:\nabla\bs{v}
+    +(\lambda+\mu)(\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +(\nabla\mu)\cdot\bigl[(\nabla u_1)\rot v_2+u_2(\nabla v_1)\rot]\Bigr)\\
+    &\qquad{}-\int_{\partial\Omega}\mu\bigl[
+    \bs{n}\cdot(\nabla u_1)\rot v_1+u_2\,\bs{n}\cdot(\nabla v_1)\rot\bigr].
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Nonconforming method for linear elasticity}
+Assume a pure Dirichlet problem so that, by~\eqref{eq: alt elasticity},
+\[
+\int_\Omega\Bigl(\mu\nabla\bs{u}:\nabla\bs{v}+(\mu+\lambda)
+        (\nabla\cdot\bs{u})(\nabla\cdot\bs{v})
+    +(\nabla\mu)\cdot[(\nabla u_1)\rot\,v_2
+    +u_2(\nabla v_1)\rot]\Bigr)=\int_\Omega\bs{f}\cdot\bs{v}
+\]
+when~$\bs{v}=\bs{0}$ on~$\partial\Omega$.  The six vector shape functions are 
+again given by~\eqref{eq: vector shape}, except that we now use the 
+nonconforming $\psi_1$, $\psi_2$, $\psi_3$ given 
+by~\eqref{eq: psi_i nonconforming}, and the nodes $\mathsf{n}_1$, 
+$\mathsf{n}_2$, $\mathsf{n}_3$ are now the midpoints of the triangle~$K$.
+
+Define the $6\times6$ element matrices
+\[
+A_{ij}=\int_K(\mu+\lambda)(\nabla\cdot\bs{\psi}_j)(\nabla\cdot\bs{\psi}_i)
+\quad\text{and}\quad
+B_{ij}=\int_K\mu\nabla\bs{\psi}_j:\nabla\bs{\psi}_i,
+\]
+and recall from~\eqref{eq: grad psi_i} that $\nabla\psi_i=-2\bs{b}_{i_-}$, so
+\[
+\nabla\bs{\psi}_j=\begin{bmatrix}
+-2b_{1j_-}&-2b_{2j_-}\\ 0&0\end{bmatrix}
+\quad\text{and}\quad
+\nabla\bs{\psi}_{j+3}=\begin{bmatrix}
+0&0\\ -2b_{1j_-}&-2b_{2j_-}\end{bmatrix}
+\quad\text{for $1\le j\le3$.}
+\]
+Similarly,
+\[
+\nabla\cdot\bs{\psi}_j=\partial_1\psi_j=-2b_{1,j_-}
+\quad\text{and}\quad
+\nabla\cdot\bs{\psi}_{j+3}=\partial_2\psi_j=-2b_{2,j_-}
+\quad\text{for $1\le j\le3$,}
+\]
+and therefore, if $i$, $j\in\{1,2,3\}$, then
+\[
+\begin{aligned}
+A_{ij}&=4b_{1j_-}b_{1i_-}\int_K(\mu+\lambda),&\quad
+A_{i,j+3}&=4b_{2j_-}b_{1i_-}\int_K(\mu+\lambda),\\
+A_{i+3,j}&=4b_{1j_-}b_{2i_-}\int_K(\mu+\lambda),&\quad
+A_{i+3,j+3}&=4b_{2j_-}b_{2i_-}\int_K(\mu+\lambda), 
+\end{aligned}
+\]
+with
+\[
+\begin{aligned}
+B_{i,j}&=4(b_{1j_-}b_{1i_-}+b_{2j_-}b_{2i_-})\int_K\mu,&\quad
+B_{i+3,j}&=0,\\
+B_{i,j+3}&=0,&\quad
+B_{i+3,j+3}&=B_{ij}.
+\end{aligned}
+\]
+
+It remains to consider the contribution from
+\begin{align*}
+D_{ij}&=\int_K(\nabla\mu)\cdot\bigl[
+     \bigl(\nabla(\bs{\psi}_j)_1\bigr)\rot(\bs{\psi}_i)_2
+    +(\bs{\psi}_j)_2\bigl(\nabla(\bs{\psi}_i)_1\bigr)\rot\bigr]\\
+    &=\int_K(\partial_2\mu)\bigl[\partial_1(\bs{\psi}_j)_1(\bs{\psi}_i)_2
+    +(\bs{\psi}_j)_2\partial_1(\bs{\psi}_i)_1\bigr]\\
+    &\qquad{}-\int_K(\partial_1\mu)\bigl[
+    \partial_2(\bs{\psi}_j)_1(\bs{\psi}_i)_2
+    +(\bs{\psi}_j)_2\partial_2(\bs{\psi}_i)_1\bigr].
+\end{align*}
+If $i$, $j\in\{1,2,3\}$, then
+\[
+D_{ij}=0=D_{i+3,j+3}
+\]
+with
+\begin{align*}
+D_{i,j+3}&=\int_K(\partial_2\mu)\bigl[0+\psi_j\partial_1\psi_i\bigr]
+    -\int_K(\partial_1\mu)\bigl[0+\psi_j\partial_2\psi_i\bigr]\\
+    &=\int_K\bigl[(\partial_2\mu)(-2b_{1i_-})-(\partial_1\mu)(-2b_{2i_-})\bigr]
+    \psi_j\\
+    &=2\int_K\bigl(b_{2i_-}\partial_1\mu-b_{1i_-}\partial_2\mu\bigr)\psi_j
+\end{align*}
+and
+\begin{align*}
+D_{i+3,j}&=\int_K(\partial_2\mu)\bigl[(\partial_1\psi_j)\psi_i+0\bigr]
+    -\int_K(\partial_1\mu)\bigl[(\partial_2\psi_j)\psi_i+0\bigr]\\
+    &=\int_K\bigl[(\partial_2\mu)(-2b_{1j_-})-(\partial_1\mu)(-2b_{2j_-})\bigr]
+    \psi_i\\
+    &=2\int_K\bigl(b_{2j_-}\partial_1\mu-b_{1j_-}\partial_2\mu\bigr)\psi_i
+    =D_{j+3,i}.
+\end{align*}
+Since $\int_K\psi_i=\area(K)/3$, if $\nabla\mu$ is constant on~$K$, then
+\[
+D_{i,j+3}=\tfrac23\area(K)(b_{2i_-}\partial_1\mu-b_{1i_-}\partial_2\mu).
+\]
+Otherwise, we use the quadrature approximation
+\[
+\int_Kf\approx\frac{\area(K)}{3}\sum_{k=1}^3f(\mathsf{n}_k),
+\]
+and since $\psi_j(\mathsf{n}_k)=\delta_{jk}$,
+\[
+D_{i,j+3}\approx\tfrac23\area(K)\bigl[b_{2i_-}(\partial_1\mu)(\mathsf{n}_j)
+    -b_{1i_-}(\partial_2\mu)(\mathsf{n}_j\bigr].
+\]
+
+For the load vector, the formula~\eqref{eq: elasticity load vec} again holds 
+but with the nonconforming $\psi_i$. Thus, if $\bs{f}$ is constant on~$K$, then 
+we still have
+\[
+f_i=\frac{\area(K)}{3}\,f_1\quad\text{and}\quad
+f_{i+3}=\frac{\area(K)}{3}\,f_2\quad\text{for $1\le \le3$.}
+\]
+If $\bs{f}$ is not constant, then the quadrature
+rule~\eqref{eq: edge midpt rule} yields the approximation
+\[
+f_i=\frac{\area(K)}{3}\,f_1(\mathsf{n}_i)\quad\text{and}\quad
+f_{i+3}=\frac{\area(K)}{3}\,f_2(\mathsf{n}_i)\quad\text{for $1\le \le3$.}
+\]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\section{Fundamental solution for linear elasticity}
+We wish to find $\bs{u}$ satisfying
+\begin{equation}\label{eq: elasticity point force}
+-\mu\nabla^2\bs{u}-(\lambda+\mu)\nabla(\nabla\cdot\bs{u})=\bs{f}\delta(\bs{x})
+\quad\text{ $\bs{0}\ne\bs{x}\in\mathbb{R}^2$,}
+\end{equation}
+for a given constant vector~$\bs{f}$.  Denote the fundamental solution for the
+Laplacian by
+\[
+v(\bs{x})=\frac{1}{2\pi}\,\log\frac{1}{|\bs{x}|}
+\]
+so that $-\nabla^2v=\delta(\bs{x})$, and put
+\[
+\bs{w}(\bs{x})=\bs{u}(\bs{x})-\mu^{-1}v(\bs{x})\bs{f}
+\]
+so that
+\[
+-\mu\nabla^2\bs{w}-(\lambda+\mu)\nabla(\nabla\cdot\bs{w})
+    =(\lambda+\mu)\mu^{-1}\nabla\bigl(\nabla\cdot(v\bs{f})\bigr)
+\quad\text{ $\bs{0}\ne\bs{x}\in\mathbb{R}^2$.}
+\]
+Taking the curl of this equation gives
+$-\mu\nabla^2(\nabla\times\bs{w})=\bs{0}$, and since $\nabla\times\bs{w}$
+vanishes at infinity we conclude that $\nabla\times\bs{w}=\bs{0}$.  It follows
+that $\bs{w}=\nabla\phi$ for some potential~$\phi$, and since
+$\nabla^2\bs{w}=\nabla^2(\nabla\phi)=\nabla(\nabla^2\phi)$ and
+$\nabla(\nabla\cdot\bs{w})=\nabla(\nabla^2\phi)$ we have
+\[
+-\mu\nabla^2\bs{w}-(\lambda+\mu)\nabla(\nabla\cdot\bs{w})
+    =-\nabla\bigl((\lambda+2\mu)\nabla^2\phi\bigr),
+\]
+implying that
+\begin{equation}\label{eq: poisson phi}
+-(\lambda+2\mu)\nabla^2\phi=(\lambda+\mu)\mu^{-1}\nabla\cdot(v\bs{f})
+    =(\lambda+\mu)\mu^{-1}\bs{f}\cdot\nabla v.
+\end{equation}
+The radially symmetric function
+\[
+\psi(\bs{x})=\frac{r^2}{8\pi}\,(1-\log r),\quad r=|\bs{x}|,
+\]
+satisfies
+\[
+\nabla^2\psi=\frac{1}{r}\,\frac{\ud}{\ud r}
+    \biggl(r\,\frac{\ud\psi}{\ud r}\biggr)
+    =\frac{1}{8\pi r}\,\frac{\ud}{\ud r}\bigl(r^2-2r^2\log r\bigr)
+    =v(\bs{x})
+\]
+and therefore
+\[
+\bs{f}\cdot\nabla v=\bs{f}\cdot\nabla(\nabla^2\psi)
+    =\nabla^2(\bs{f}\cdot\nabla\psi),
+\]
+so \eqref{eq: poisson phi} is satisfied if we put
+\[
+\phi(\bs{x})=-\frac{\lambda+\mu}{\mu(\lambda+2\mu)}\,\bs{f}\cdot\nabla\psi.
+\]
+Since $\nabla(\bs{f}\cdot\nabla\psi)=(\bs{f}\cdot\nabla)\nabla\psi$,
+\[
+\bs{w}=\nabla\phi=-\frac{\lambda+\mu}{\mu(\lambda+2\mu)}\,
+    (\bs{f}\cdot\nabla)\nabla\psi
+\]
+and
+\[
+\nabla\psi=\frac{1-2\log r}{8\pi}\,\bs{x},
+\]
+we have
+\begin{align*}
+(\bs{f}\cdot\nabla)\nabla\psi&=\frac{1}{8\pi}\,f_p\partial_p
+    \bigl((1-2\log r)\bs{x}\bigr)
+    =\frac{1}{8\pi}\,f_p\biggl(\frac{-2}{r}\,\frac{x_p}{r}\,\bs{x}
+    +(1-2\log r)\bs{e}_p\biggr)\\
+    &=\frac{1}{8\pi}(1-2\log r)\bs{f}-\frac{1}{4\pi}\,
+        \frac{\bs{f}\cdot\bs{x}}{r}\,\frac{\bs{x}}{r}
+\end{align*}
+and thus
+\begin{align*}
+\bs{u}(\bs{x})&=\mu^{-1}v(\bs{x})\bs{f}+\bs{w}(\bs{x})
+    =\frac{\bs{f}}{2\pi\mu}\,\log\frac{1}{r}
+    -\frac{\lambda+\mu}{\mu(\lambda+2\mu)}\biggl(
+    \frac{\bs{f}}{8\pi}+\frac{\bs{f}}{4\pi}\log\frac{1}{r}
+    -\frac{1}{4\pi}\,\frac{\bs{f}\cdot\bs{x}}{r}\,\frac{\bs{x}}{r}\biggr)\\
+    &=\frac{\bs{f}}{4\pi\mu(\lambda+2\mu)}\bigr(
+    2(\lambda+2\mu)-(\lambda+\mu)\bigr)\log\frac{1}{r}
+        +\frac{\lambda+\mu}{4\pi\mu(\lambda+2\mu)}\biggl(
+    \frac{(\bs{f}\cdot\bs{x})\bs{x}}{r^2}-\frac{\bs{f}}{2}\biggr).
+\end{align*}
+If $\bs{u}$ is a solution of~\eqref{eq: elasticity point force}, then so is
+$\bs{u}+\bs{c}$ for any constant vector~$\bs{c}\in\mathbb{R}^2$. Dropping the
+constant term, we arrive at the solution
+\[
+u_p(\bs{x})=\frac{1}{4\pi\mu(\lambda+2\mu)}\biggl(
+    (\lambda+3\mu)\delta_{pq}\log\frac{1}{|\bs{x}|}
+    +(\lambda+\mu)\frac{x_px_q}{|\bs{x}|^2}\biggr)f_q.
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exact solution for elasticity with variable coefficients}
+
+We consider the elasticity equation on the square $\Omega=(0,\pi)^2$ with
+Lam\'e coefficients
+\[
+\lambda(x,y)=\Lambda(1+\alpha\sin(2x))\quad\text{and}\quad\mu=1+\beta(x+y).
+\]
+
+\begin{lemma}\label{lem: elasticity div free soln}
+Let
+\[
+\phi(x,y)=2\beta[2\sin(2x)\sin(2y)-\cos(2x)+\cos(2y)]
+    +4\mu(x,y)\sin(2y)[2\cos(2x)-1],\\
+\]
+The vector fields
+\[
+\bs{u}(x,y)=\begin{bmatrix}
+\bigl(\cos(2x)-1\bigr)\sin(2y)\\[1\jot]
+\bigl(1-\cos(2y)\bigr)\sin(2x)\end{bmatrix}
+\quad\text{and}\quad
+\bs{f}(x,y)=\begin{bmatrix}\phi(x,y)\\ -\phi(y,x)\end{bmatrix}
+\]
+satisfy
+\[
+\nabla\cdot\bs{u}=0\quad\text{and}\quad
+-\nabla\cdot\bs{\sigma}[\bs{u}]=\bs{f}.
+\]
+\end{lemma}
+\begin{proof}
+We have
+\begin{align*}
+\partial_1u_1&=-2\sin(2x)\sin(2y),\\
+\partial_1u_2&=2(1-\cos(2y))\cos(2x),\\
+\partial_2u_1&=2(\cos(2x)-1)\cos(2y),\\
+\partial_2u_2&=2\sin(2y)\sin(2x),
+\end{align*}
+so the components of the strain tensor
+$\varepsilon_{pq}=\tfrac12(\partial_pu_q+\partial_qu_p)$ are
+\[
+\varepsilon_{11}=-2\sin(2x)\sin(2y),\qquad
+\varepsilon_{12}=\varepsilon_{21}=\cos(2x)-\cos(2y),\qquad
+\varepsilon_{22}=2\sin(2y)\sin(2x),
+\]
+and in particular,
+\[
+\nabla\cdot\bs{u}=\varepsilon_{11}+\varepsilon_{22}
+    =\partial_1u_1+\partial_2u_2=0.
+\]
+Thus, $\sigma_{pq}=2\mu\varepsilon_{pq}$ and so the components of the stress
+tensor are
+\[
+\sigma_{11}=-4\mu\sin(2x)\sin(2y),\qquad
+\sigma_{12}=\sigma_{21}=2\mu[\cos(2x)-\cos(2y)],\qquad
+\sigma_{22}=4\mu\sin(2y)\sin(2x).
+\]
+Since $\partial_1\mu=\beta=\partial_2\mu$ and $\mu(x,y)=\mu(y,x)$,
+\begin{align*}
+\partial_1\sigma_{11}(x,y)&=-4\beta\sin(2x)\sin(2y)-8\mu\cos(2x)\sin(2y),\\
+\partial_2\sigma_{21}(x,y)&=2\beta[\cos(2x)-\cos(2y)]+4\mu\sin(2y),\\
+\partial_1\sigma_{12}(x,y)&=2\beta[\cos(2x)-\cos(2y)]-4\mu\sin(2x)
+    =-\partial_2\sigma_{21}(y,x),\\
+\partial_2\sigma_{22}(x,y)&=4\beta\sin(2y)\sin(2x)+8\mu\cos(2y)\sin(2x)
+    =-\partial_1\sigma_{11}(y,x),
+\end{align*}
+and therefore
+\[
+f_1(x,y)=-(\partial_1\sigma_{11}+\partial_2\sigma_{21})(x,y)=\phi(x,y)
+\]
+with
+\[
+f_2(x,y)=-(\partial_1\sigma_{12}+\partial_2\sigma_{22})(x,y)
+=(\partial_2\sigma_{21}+\partial_1\sigma_{11})(y,x)=-f_1(y,x)=-\phi(y,x),
+\]
+as claimed.
+\end{proof}
+
+\begin{lemma}\label{lem: elasticity extra soln}
+Put $\tau(x,y)=1+\alpha\sin(2x)$, so that $\lambda(x,y)=\Lambda\tau(x,y)$, and
+let
+\begin{gather*}
+\psi_1(x,y)=\mu(x,y)[2\sin(x)\sin(y)-\cos(x+y)]-\beta\sin(x+y),\\
+\psi_2(x,y)=2\beta\cos(x)\sin(y),\qquad
+\psi_3(x,y)=\tau(x,y)\cos(x+y).
+\end{gather*}
+The vector fields
+\[
+\bs{u}(x,y)=\sin(x)\sin(y)\begin{bmatrix}1\\ 1 \end{bmatrix}
+\]
+and
+\[
+\bs{f}(x,y)=\begin{bmatrix}
+\psi_1(x,y)-\psi_2(x,y)\\
+\psi_1(x,y)-\psi_2(y,x)\end{bmatrix}
+-\Lambda\begin{bmatrix}
+\psi_3(x,y)+2\alpha\cos(2x)\sin(x+y)\\
+\psi_3(x,y)\end{bmatrix}
+\]
+satisfy $-\nabla\cdot\bs{\sigma}[\bs{u}]=\bs{f}$.
+\end{lemma}
+\begin{proof}
+Since $u_1=u_2$,
+\begin{align*}
+\partial_1u_1&=\partial_1u_2=\cos(x)\sin(y),\\
+\partial_2u_1&=\partial_2u_2=\sin(x)\cos(y),
+\end{align*}
+and the components of the strain tensor are
+\[
+\varepsilon_{11}=\cos(x)\sin(y),\qquad
+\varepsilon_{12}=\varepsilon_{21}=\tfrac12\sin(x+y),\qquad
+\varepsilon_{22}=\sin(x)\cos(y),
+\]
+so in particular,
+\[
+\nabla\cdot\bs{u}=\varepsilon_{11}+\varepsilon_{22}=\sin(x+y).
+\]
+Thus, the components of the stress tensor are
+\begin{align*}
+\sigma_{11}&=\lambda\nabla\cdot\bs{u}+2\mu\varepsilon_{11}
+    =\lambda\sin(x+y)+2\mu\cos(x)\sin(y),\\
+\sigma_{12}&=2\mu\varepsilon_{12}=\mu\sin(x+y)=\sigma_{21},\\
+\sigma_{22}&=\lambda\nabla\cdot\bs{u}+2\mu\varepsilon_{22}
+    =\lambda\sin(x+y)+2\mu\sin(x)\cos(y).
+\end{align*}
+We have
+\begin{align*}
+\partial_1\sigma_{11}&=(\partial_1\lambda)\sin(x+y)+\lambda\cos(x+y)
+    +2(\partial_1\mu)\cos(x)\sin(y)-2\mu\sin(x)\sin(y)\\
+    &=\Lambda[(\partial_1\tau)\sin(x+y)+\tau\cos(x+y)]
+    +2\beta\cos(x)\sin(y)-2\mu\sin(x)\sin(y),
+\end{align*}
+with
+\[
+\partial_2\sigma_{21}=\beta\sin(x+y)+\mu\cos(x+y)=\partial_1\sigma_{12}
+\]
+and
+\[
+\partial_2\sigma_{22}=\Lambda\tau\cos(x+y)+2\beta\sin(x)\cos(y)
+    -2\mu\sin(x)\sin(y).
+\]
+Therefore, noting that $\partial_1\tau=2\alpha\cos(2x)$,
+\begin{align*}
+-f_1&=\partial_1\sigma_{11}+\partial_2\sigma_{21}
+    =\Lambda[2\alpha\cos(2x)\sin(x+y)+\tau\cos(x+y)]\\
+    &\qquad{}+\beta[2\cos(x)\sin(y)+\sin(x+y)]+\mu[\cos(x+y)-2\sin(x)\sin(y)]\\
+    &=\Lambda[\psi_3(x,y)+2\alpha\cos(2x)\sin(x+y)]-\psi_1(x,y)+\psi_2(x,y)
+\end{align*}
+and
+\begin{align*}
+-f_2&=\partial_1\sigma_{12}+\partial_2\sigma_{22}\\
+    &=\Lambda\tau\cos(x+y)+\beta[2\sin(x)\cos(y)
+    +\sin(x+y)]+\mu[\cos(x+y)-2\sin(x)\sin(y)]\\
+    &=\Lambda\psi_3(x,y)+\psi_2(y,x)-\psi_1(x,y),
+\end{align*}
+which implies the result.
+\end{proof}
+
+We now use superposition, taking the solution in
+\cref{lem: elasticity div free soln} and adding $\Lambda^{-1}$ times the
+solution in \cref{lem: elasticity extra soln}, to obtain
+\[
+\bs{u}(x,y)=\begin{bmatrix}
+\bigl(\cos(2x)-1\bigr)\sin(2y)\\[1\jot]
+\bigl(1-\cos(2y)\bigr)\sin(2x)\end{bmatrix}
++\frac{\sin(x)\sin(y)}{\Lambda}\begin{bmatrix}1\\ 1 \end{bmatrix}
+\]
+and
+\[
+\bs{f}=\begin{bmatrix}
+\phi(x,y)-\psi_3(x,y)-2\alpha\cos(2x)\sin(x+y)\\
+-\phi(y,x)-\psi_3(x,y)\end{bmatrix}
++\frac{1}{\Lambda}\begin{bmatrix}
+\psi_1(x,y)-\psi_2(x,y)\\
+\psi_1(x,y)-\psi_2(y,x)\end{bmatrix}.
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
