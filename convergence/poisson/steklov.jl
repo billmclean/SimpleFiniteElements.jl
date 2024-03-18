@@ -38,18 +38,18 @@ end
 exact_λ = [ ω * coth(ω*Ly) for ω in [1, 2, 3] .* π / Lx ]
 largest = false
 
-conforming = false
+conforming = true
 path = joinpath("..", "..", "spatial_domains", "rect.geo")
 gmodel = GeometryModel(path)
 println("Steklov eigenproblem.")
 if conforming
     println("Using conforming elements.")
-    LHS_bilinear_forms=[("Omega", ∫∫a_∇u_dot_∇v!, 1.0)]
-    RHS_bilinear_forms=[("Top", ∫c_u_v!, 1.0)]
+    LHS_bilinear_forms=Dict("Omega" => (∫∫a_∇u_dot_∇v!, 1.0))
+    RHS_bilinear_forms=Dict("Top"   => (∫c_u_v!, 1.0))
 else
     println("Using non-conforming elements.")
-    LHS_bilinear_forms=[("Omega", NCP.∫∫a_∇u_dot_∇v!, 1.0)]
-    RHS_bilinear_forms=[("Top", NCP.∫c_u_v!, 1.0)]
+    LHS_bilinear_forms=Dict("Omega" => (NCP.∫∫a_∇u_dot_∇v!, 1.0))
+    RHS_bilinear_forms=Dict("Top"   => (NCP.∫c_u_v!, 1.0))
 end
 essential_bcs = [("Bottom", 0.0), ("Left", 0.0), ("Right", 0.0)]
 
@@ -68,9 +68,9 @@ for k = 0:refinements
         mesh = FEMesh(gmodel, hmax, order=2, save_msh_file=false)
         dof = DegreesOfFreedom(mesh, essential_bcs, NCP.ELT_DOF)
     end
-    num_steklov = reorder_dof_steklov!(mesh, dof, RHS_bilinear_forms)
-    A_free, A_fix = assemble_matrix(mesh, dof, LHS_bilinear_forms)
-    B_free, B_fix = assemble_matrix(mesh, dof, RHS_bilinear_forms)
+    num_steklov = reorder_dof_steklov!(dof, RHS_bilinear_forms)
+    A_free, A_fix = assemble_matrix(dof, LHS_bilinear_forms)
+    B_free, B_fix = assemble_matrix(dof, RHS_bilinear_forms)
     S = SchurComplement(A_free, num_steklov)
     B11 = B_free[1:num_steklov,1:num_steklov]
     if num_steklov < 40 # use dense eigensolver

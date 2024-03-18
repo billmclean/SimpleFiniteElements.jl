@@ -254,6 +254,43 @@ function fundamental_soln(x::SVector{2,Float64}, y::SVector{2,Float64},
 	       G21 G22 ]
 end
 
+function L2error(u1h::Vector{Float64}, u2h::Vector{Float64}, u::Function, 
+                 dof::DegreesOfFreedom, level::Int64, params...)
+    mesh = dof.mesh
+    L2err = 0.0
+    ψ = Vector{Float64}(undef, 3)
+    b = Matrix{Float64}(undef, 2, 3)
+    cntrd = Vector{Float64}(undef, 2)
+    for (name, elt_type) in mesh.elt_type_in
+        # Ignore unless element type is "Triangle 3".
+        if elt_type ≠ 2
+            continue
+        end
+	each_elt_index, _, _, elt_global_dof, _,
+        coord = prepare_assembly(name, dof, 1)
+        for l in each_elt_index
+	    elt_node_coord!(coord, elt_global_dof, name, l, dof)
+            area = barycentric!(b, cntrd, coord)
+            x, y = quadrature_points(level, coord)
+            Σ_L2 = 0.0
+            for k in eachindex(x)
+                shape_func!(ψ, x[k], y[k], b, cntrd)
+                u1h_k = 0.0
+                u2h_k = 0.0
+		for j in eachindex(elt_global_dof)
+                    r = elt_global_dof[j]
+                    u1h_k += u1h[r] * ψ[j]
+                    u2h_k += u2h[r] * ψ[j]
+                end
+                u_k = u(x[k], y[k], params...)
+                Σ_L2 += ( u1h_k - u_k[1] )^2 + ( u2h_k - u_k[2] )^2
+            end
+	    L2err += (area / lastindex(x)) * Σ_L2
+        end
+    end
+    L2err = sqrt(L2err)
+    return L2err
+end
 function error_norms(u1h::Vector{Float64}, u2h::Vector{Float64}, u::Function, 
                  ∇u::Function, dof::DegreesOfFreedom, level::Int64, params...)
     mesh = dof.mesh

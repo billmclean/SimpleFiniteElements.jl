@@ -1,7 +1,8 @@
 using SimpleFiniteElements
 import StaticArrays: SA
 import SimpleFiniteElements.Elasticity: ∫∫λ_div_u_div_v!, ∫∫2μ_εu_εv!, 
-					∫∫f_dot_v!, elasticity_soln, L2error 
+					∫∫f_dot_v!, elasticity_soln, 
+                                        L2error 
 import SimpleFiniteElements.NonConformingElasticity as NCE
 import Printf: @printf
 
@@ -16,7 +17,7 @@ import Example4
 ex = Example2
 
 nrows = 4
-conforming = true
+conforming = false
 quadrature_level = 1
 println(ex.msg)
 println("Computing L2 error using $(3 * 4^quadrature_level) "
@@ -25,16 +26,16 @@ println("Computing L2 error using $(3 * 4^quadrature_level) "
 let
     if conforming
         println("Using conforming elements.")
-	bilinear_forms = [("Omega", ∫∫λ_div_u_div_v!, ex.λ),
-			  ("Omega", ∫∫2μ_εu_εv!, ex.μ)]
-        linear_funcs = [("Omega", ∫∫f_dot_v!, ex.f)]
+	bilinear_forms = Dict("Omega" => [(∫∫λ_div_u_div_v!, ex.λ),
+					  (∫∫2μ_εu_εv!, ex.μ)])
+        linear_funcs = Dict("Omega" => (∫∫f_dot_v!, ex.f))
         mesh_order = 1
     else
         println("Using non-conforming elements.")
-        bilinear_forms = [("Omega", NCE.∫∫a_div_u_div_v!, ex.μ_plus_λ),
-                          ("Omega", NCE.∫∫μ_∇u_colon_∇v!, ex.μ),
-			  ("Omega", NCE.correction!, ex.∇μ)]
-        linear_funcs = [("Omega", NCE.∫∫f_dot_v!, ex.f)]
+        bilinear_forms = Dict("Omega" => [(NCE.∫∫a_div_u_div_v!, ex.μ_plus_λ),
+                                          (NCE.∫∫μ_∇u_colon_∇v!, ex.μ),
+					  (NCE.correction!, ex.∇μ)])
+	linear_funcs = Dict("Omega" => (NCE.∫∫f_dot_v!, ex.f))
         mesh_order = 2
     end
 
@@ -44,8 +45,8 @@ let
         else
             dof = DegreesOfFreedom(mesh, ex.essential_bcs, NCE.ELT_DOF)
         end
-        u1h, u2h = elasticity_soln(mesh, dof, bilinear_forms, linear_funcs)
-        u = get_nodal_values(ex.exact_u, mesh, dof, 2)
+        u1h, u2h = elasticity_soln(dof, bilinear_forms, linear_funcs)
+        u = get_nodal_values(ex.exact_u, dof, 2)
 
         max_error = 0.0
         for k in eachindex(u1h)

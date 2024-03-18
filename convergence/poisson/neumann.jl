@@ -38,7 +38,7 @@ function g(x, y)
     return cos(ω*x)
 end
 
-conforming = true
+conforming = false
 path = joinpath("..", "..", "spatial_domains", "rect.geo")
 gmodel = GeometryModel(path)
 println("Pure Neumann problem.")
@@ -50,9 +50,9 @@ if conforming
     linear_funcs = Dict("Top" => (∫g_v!, g))
 else
     println("Using non-conforming elements.")
-    bilinear_forms = [("Omega", NCP.∫∫a_∇u_dot_∇v!, 1.0),
-		      ("Omega", NCP.∫∫c_u_v!, 1.0)]
-    linear_funcs = [("Top", NCP.∫g_v!, g)]
+    bilinear_forms = Dict("Omega" => [(NCP.∫∫a_∇u_dot_∇v!, 1.0),
+				      (NCP.∫∫c_u_v!, 1.0)])
+    linear_funcs = Dict("Top" => (NCP.∫g_v!, g))
 end
 essential_bcs = Tuple[]
 

@@ -48,14 +48,14 @@ gmodel = GeometryModel(path)
 println("Poisson problem with zero mixed boundary data.")
 if conforming
     println("Using conforming elements.")
-    bilinear_forms = [("Omega", ∫∫a_∇u_dot_∇v!, 1.0),
-		      ("Omega", ∫∫c_u_v!, 1.0)]
-    linear_funcs = [("Omega", ∫∫f_v!, f)]
+    bilinear_forms = Dict("Omega" => [(∫∫a_∇u_dot_∇v!, 1.0),
+				      (∫∫c_u_v!, 1.0)])
+    linear_funcs = Dict("Omega" => (∫∫f_v!, f))
 else
     println("Using non-conforming elements.")
-    bilinear_forms = [("Omega", NCP.∫∫a_∇u_dot_∇v!, 1.0),
-		      ("Omega", NCP.∫∫c_u_v!, 1.0)]
-    linear_funcs = [("Omega", NCP.∫∫f_v!, f)]
+    bilinear_forms = Dict("Omega" => [(NCP.∫∫a_∇u_dot_∇v!, 1.0),
+				      (NCP.∫∫c_u_v!, 1.0)])
+    linear_funcs = Dict("Omega" => (NCP.∫∫f_v!, f))
 end
 essential_bcs = [("Left", 0.0), ("Right", 0.0)]
 

@@ -25,8 +25,7 @@
 #
 
 using SimpleFiniteElements
-import SimpleFiniteElements.Poisson: ∫∫a_∇u_dot_∇v!, ∫∫f_v!, 
-                                     L2error, H1error, error_norms
+import SimpleFiniteElements.Poisson: ∫∫a_∇u_dot_∇v!, ∫∫f_v!, error_norms
 import SimpleFiniteElements.NonConformingPoisson as NCP
 import StaticArrays: SA
 using Printf
@@ -57,12 +56,12 @@ println("Computing L2 error using $(3 * 4^quadrature_level) "
         * "quadrature points per element.")
 if conforming
     println("Using conforming elements.")
-    bilinear_forms = [("Omega", ∫∫a_∇u_dot_∇v!, a)]
-    linear_funcs = [("Omega", ∫∫f_v!, f)]
+    bilinear_forms = Dict("Omega" => (∫∫a_∇u_dot_∇v!, a))
+    linear_funcs = Dict("Omega" => (∫∫f_v!, f))
 else
     println("Using non-conforming elements.")
-    bilinear_forms = [("Omega", NCP.∫∫a_∇u_dot_∇v!, a)]
-    linear_funcs = [("Omega", NCP.∫∫f_v!, f)]
+    bilinear_forms = Dict("Omega" => (NCP.∫∫a_∇u_dot_∇v!, a))
+    linear_funcs = Dict("Omega" => (NCP.∫∫f_v!, f))
 end
 essential_bcs = [("Left", 0.0), ("Right", 0.0)]
 
@@ -83,12 +82,12 @@ for k = 0:refinements
         mesh = FEMesh(gmodel, hmax, order=2, save_msh_file=false)
         dof = DegreesOfFreedom(mesh, essential_bcs, NCP.ELT_DOF)
     end
-    A_free, A_fix = assemble_matrix(mesh, dof, bilinear_forms)
-    b_free, u_fix = assemble_vector(mesh, dof, linear_funcs)
+    A_free, A_fix = assemble_matrix(dof, bilinear_forms)
+    b_free, u_fix = assemble_vector(dof, linear_funcs)
     b = b_free - A_fix * u_fix
     u_free = A_free \ b
     uh = [ u_free; u_fix ]
-    u = get_nodal_values(exact_u, mesh, dof)
+    u = get_nodal_values(exact_u, dof)
     maxerr[k+1] = maximum(abs.(uh-u))
     if conforming
 	L2err[k+1], H1err[k+1] = error_norms(uh, exact_u, ∇u, 

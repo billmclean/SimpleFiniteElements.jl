@@ -39,19 +39,19 @@ end
 
 sort!(λ)
 
-conforming = false
+conforming = true
 path = joinpath("..", "..", "spatial_domains", "rect.geo")
 gmodel = GeometryModel(path)
 println("Eigenproblem problem.")
 if conforming
     println("Using conforming elements.")
-    LHS_bilinear_forms = [("Omega", ∫∫a_∇u_dot_∇v!, 1.0)]
-    RHS_bilinear_forms = [("Omega", ∫∫c_u_v!, 1.0)]
+    LHS_bilinear_forms = Dict("Omega" => (∫∫a_∇u_dot_∇v!, 1.0))
+    RHS_bilinear_forms = Dict("Omega" => (∫∫c_u_v!, 1.0))
     extra_nev = 1
 else
     println("Using non-conforming elements.")
-    LHS_bilinear_forms = [("Omega", NCP.∫∫a_∇u_dot_∇v!, 1.0)]
-    RHS_bilinear_forms = [("Omega", NCP.∫∫c_u_v!, 1.0)]
+    LHS_bilinear_forms = Dict("Omega" => (NCP.∫∫a_∇u_dot_∇v!, 1.0))
+    RHS_bilinear_forms = Dict("Omega" => (NCP.∫∫c_u_v!, 1.0))
     extra_nev = 8
 end
 linear_funcs = Tuple[]
@@ -78,8 +78,8 @@ for k = 0:refinements
         mesh = FEMesh(gmodel, hmax, order=2, save_msh_file=false)
         dof = DegreesOfFreedom(mesh, essential_bcs, NCP.ELT_DOF)
     end
-    A_free, A_fix = assemble_matrix(mesh, dof, LHS_bilinear_forms)
-    B_free, B_fix = assemble_matrix(mesh, dof, RHS_bilinear_forms)
+    A_free, A_fix = assemble_matrix(dof, LHS_bilinear_forms)
+    B_free, B_fix = assemble_matrix(dof, RHS_bilinear_forms)
     largest = false
     results = lobpcg(A_free, B_free, largest, nev+extra_nev)
     λh = results.λ[1:nev]

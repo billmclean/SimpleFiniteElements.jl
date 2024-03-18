@@ -1,6 +1,6 @@
 using SimpleFiniteElements
 import SimpleFiniteElements.Elasticity: elasticity_soln, visualise_soln,
-                          ∫∫λ_div_u_div_v!, ∫∫μ_εu_εv!, ∫∫f_dot_v!
+                          ∫∫λ_div_u_div_v!, ∫∫2μ_εu_εv!, ∫∫f_dot_v!
 import SimpleFiniteElements.NonConformingElasticity as nce
 import Printf: @printf, @sprintf
 import StaticArrays: SA
@@ -19,15 +19,16 @@ display_soln = true
 gmodel = GeometryModel("../../spatial_domains/square.geo")
 
 if conforming
-    bilinear_forms = [("Omega", ∫∫λ_div_u_div_v!, (x, y) ->  λ(x, y, Λ)),
-		      ("Omega", ∫∫μ_εu_εv!, (x, y) -> μ(x, y, α))]
-    linear_funcs = [("Omega", ∫∫f_dot_v!, (x, y) -> f(x, y, α, Λ))]
+    bilinear_forms = Dict("Omega" => [(∫∫λ_div_u_div_v!, (x, y) ->  λ(x, y, Λ)),
+				      (∫∫2μ_εu_εv!, (x, y) -> μ(x, y, α))])
+    linear_funcs = Dict("Omega" => (∫∫f_dot_v!, (x, y) -> f(x, y, α, Λ)))
     mesh_order = 1
     println("Elasticity with conforming FEM")
 else
-    bilinear_forms = [("Omega", nce.∫∫λ_div_u_div_v!, (x, y) ->  λ(x, y, Λ)),
-		      ("Omega", nce.∫∫μ_εu_εv!, (x, y) -> μ(x, y, α))]
-    linear_funcs = [("Omega", nce.∫∫f_dot_v!, (x, y) -> f(x, y, α, Λ))]
+    bilinear_forms = Dict(
+                     "Omega" => [(nce.∫∫a_div_u_div_v!, (x, y)-> λ(x, y, Λ)),
+				 (nce.∫∫μ_∇u_colon_∇v!, (x, y) -> μ(x, y, α))])
+    linear_funcs = Dict("Omega" => (nce.∫∫f_dot_v!, (x, y)->f(x, y, α, Λ)))
     mesh_order = 2
     println("Elasticity with non-conforming FEM")
 end
@@ -40,18 +41,18 @@ if display_soln
     mesh = FEMesh(gmodel, hmax; order=mesh_order, verbosity=2)
     if conforming
         dof = DegreesOfFreedom(mesh, essential_bcs)
-        u1h, u2h = elasticity_soln(mesh, dof, bilinear_forms, linear_funcs)
-        u_mat = get_nodal_values(u, mesh, dof, 2)
-        visualise_soln(mesh, dof, u1h, u2h, scale)
-        visualise_soln(mesh, dof, u_mat[:,1], u_mat[:,2], scale, 3)
-        visualise_soln(mesh, dof, u_mat[:,1]-u1h, u_mat[:,2]-u2h, 1.0, 5)
+        u1h, u2h = elasticity_soln(dof, bilinear_forms, linear_funcs)
+        u_mat = get_nodal_values(u, dof, 2)
+        visualise_soln(dof, u1h, u2h, scale)
+        visualise_soln(dof, u_mat[:,1], u_mat[:,2], scale, 3)
+        visualise_soln(dof, u_mat[:,1]-u1h, u_mat[:,2]-u2h, 1.0, 5)
     else
         dof = DegreesOfFreedom(mesh, essential_bcs, nce.ELT_DOF)
-        u1h, u2h = elasticity_soln(mesh, dof, bilinear_forms, linear_funcs)
-        u_mat = get_nodal_values(u, mesh, dof, 2)
+        u1h, u2h = elasticity_soln(dof, bilinear_forms, linear_funcs)
+        u_mat = get_nodal_values(u, dof, 2)
 	edenum = EdgeEnumeration(mesh)
-        nce.visualise_soln(mesh, dof, edenum, u1h, u2h, scale)
-	nce.visualise_soln(mesh, dof, edenum, u_mat[:,1], u_mat[:,2], scale, 3)
+        nce.visualise_soln(dof, edenum, u1h, u2h, scale)
+	nce.visualise_soln(dof, edenum, u_mat[:,1], u_mat[:,2], scale, 3)
     end
     figure(1)
     title("Numerical Solution")
@@ -70,9 +71,9 @@ function fem_error(mesh::FEMesh, verbosity=2)
     else
         dof = DegreesOfFreedom(mesh, essential_bcs, nce.ELT_DOF)
     end
-    u1h, u2h = elasticity_soln(mesh, dof, bilinear_forms, linear_funcs)
+    u1h, u2h = elasticity_soln(dof, bilinear_forms, linear_funcs)
 
-    u_mat = get_nodal_values(u, mesh, dof, 2)
+    u_mat = get_nodal_values(u, dof, 2)
 #    display([u1h[1:10,1] u_mat[1:10,1]])
     err = 0.0
     for k = 1:length(u1h)

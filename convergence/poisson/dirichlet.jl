@@ -31,16 +31,16 @@ const ω = 2π / Lx
 exact_u(x, y) = sin(ω*x) * sinh(ω*y) / sinh(ω*Ly)
 g(x, y) = sin(ω*x)
 
-conforming = false
+conforming = true
 path = joinpath("..", "..", "spatial_domains", "rect.geo")
 gmodel = GeometryModel(path)
 println("Pure Dirichlet problem.")
 if conforming
     println("Using conforming elements.")
-    bilinear_forms = [("Omega", ∫∫a_∇u_dot_∇v!, 1.0)]
+    bilinear_forms = Dict("Omega" => (∫∫a_∇u_dot_∇v!, 1.0))
 else
     println("Using non-conforming elements.")
-    bilinear_forms = [("Omega", NCP.∫∫a_∇u_dot_∇v!, 1.0)]
+    bilinear_forms = Dict("Omega" => (NCP.∫∫a_∇u_dot_∇v!, 1.0))
 end
 linear_funcs = Tuple[]
 essential_bcs = [("Top", g), ("Bottom", 0.0), ("Left", 0.0), ("Right", 0.0)]
