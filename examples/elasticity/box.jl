@@ -26,4 +26,3 @@ u1h, u2h = elasticity_soln(dof, bilinear_forms, linear_funcs)
 scale = 1.0
 visualise_soln(dof, u1h, u2h, scale)
 
-

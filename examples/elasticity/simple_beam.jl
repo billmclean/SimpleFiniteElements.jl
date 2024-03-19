@@ -9,11 +9,11 @@ path = joinpath("..", "..", "spatial_domains", "beam1.geo")
 gmodel = GeometryModel(path)
 λ = 10.0
 μ = 0.5
-bilinear_forms = [("Beam", ∫∫λ_div_u_div_v!, λ),
-		  ("Beam", ∫∫2μ_εu_εv!, μ)]
+bilinear_forms = Dict("Beam" => [(∫∫λ_div_u_div_v!, λ),
+		                 (∫∫2μ_εu_εv!, μ)])
 
 f = SA[0.0, -0.5]
-linear_funcs = [("Beam", ∫∫f_dot_v!, f)]
+linear_funcs = Dict("Beam" => (∫∫f_dot_v!, f))
 gD = SA[0.0, 0.0]
 essential_bcs = [("Fixed", gD)]
 
@@ -23,7 +23,7 @@ dof = DegreesOfFreedom(mesh, essential_bcs)
 
 u1h, u2h = elasticity_soln(dof, bilinear_forms, linear_funcs)
 
-scale = 50.0
+scale = 150.0
 visualise_soln(dof, u1h, u2h, scale)
 
 
