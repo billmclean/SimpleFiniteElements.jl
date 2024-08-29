@@ -271,7 +271,7 @@ function triangle_area(coord::Matrix{Float64})
     w1 = coord[1,2] - coord[1,3]
     w2 = coord[2,2] - coord[2,3]
     # overwrite B[1:2,1:2] with its inverse transpose
-    area = abs(v1 * w2 - v2 * w1)
+    area = abs(v1 * w2 - v2 * w1) / 2
 end
 
 
