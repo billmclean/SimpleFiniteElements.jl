@@ -1,7 +1,7 @@
 name = "SimpleFiniteElements"
 uuid = "125632e7-bef4-4648-bc1f-71b5efcf8068"
 authors = ["William McLean <w.mclean@unsw.edu.au>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Gmsh = "705231aa-382f-11e9-3f0c-b7cb4346fdeb"
