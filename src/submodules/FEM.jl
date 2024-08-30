@@ -274,5 +274,4 @@ function triangle_area(coord::Matrix{Float64})
     area = abs(v1 * w2 - v2 * w1) / 2
 end
 
-
 end # module
