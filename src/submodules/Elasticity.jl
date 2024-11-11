@@ -291,6 +291,7 @@ function L2error(u1h::Vector{Float64}, u2h::Vector{Float64}, u::Function,
     L2err = sqrt(L2err)
     return L2err
 end
+
 function error_norms(u1h::Vector{Float64}, u2h::Vector{Float64}, u::Function, 
                  ∇u::Function, dof::DegreesOfFreedom, level::Int64, params...)
     mesh = dof.mesh
